@@ -1,0 +1,111 @@
+---
+/**
+ * A card with an icon, a title and body copy. Lay several out with
+ * <div class="grid grid--3" data-reveal-group> ... </div>.
+ *
+ *   <FeatureCard icon="shield-check" title="Commercially Insured">
+ *     Certificate of Insurance (COI) available. Spill compliant.
+ *   </FeatureCard>
+ *
+ * index   Optional "01", "02" ... shown in the corner.
+ * href    Makes the whole card a link.
+ * heading h3 (default) | h4: pick the level that fits the page outline.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  icon?: IconName;
+  title: string;
+  index?: string;
+  href?: string;
+  heading?: 'h3' | 'h4';
+  class?: string;
+}
+
+const { icon, title, index, href, heading = 'h3', class: className } = Astro.props;
+const Heading = heading;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag class:list={['feature', 'card', { 'feature--link': href }, className]} href={href} data-reveal>
+  <div class="feature__top">
+    {icon && <span class="feature__icon"><Icon name={icon} size={24} /></span>}
+    {index && <span class="feature__index numeral">{index}</span>}
+  </div>
+  <Heading class="feature__title h4">{title}</Heading>
+  <div class="feature__body"><slot /></div>
+  {href && <span class="feature__more"><Icon name="arrow-right" size={18} /></span>}
+</Tag>
+
+<style>
+  .feature {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform var(--dur-2) var(--ease-out),
+      border-color var(--dur-2) var(--ease-out),
+      box-shadow var(--dur-2) var(--ease-out);
+  }
+
+  .feature:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-2);
+  }
+
+  .feature__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.4rem;
+  }
+
+  .feature__icon {
+    display: grid;
+    place-items: center;
+    width: 3.1rem;
+    height: 3.1rem;
+    color: var(--accent);
+    background: rgb(95 175 255 / 0.1);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+  }
+
+  .feature__index {
+    font-size: var(--step-2);
+    color: var(--line-strong);
+  }
+
+  .feature__title {
+    font-family: var(--font-body);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  .feature__body {
+    margin-top: 0.7rem;
+    font-size: var(--step--1);
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .feature__body > :global(* + *) {
+    margin-top: 0.75em;
+  }
+
+  .feature__more {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    color: var(--accent);
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .feature--link:hover .feature__more {
+    transform: translateX(5px);
+  }
+</style>

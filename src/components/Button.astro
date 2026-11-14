@@ -1,0 +1,155 @@
+---
+/**
+ * Link or button with the site's button styling.
+ *
+ *   <Button href="/contact-us/">Get in Touch</Button>
+ *   <Button href={contact.phoneHref} variant="ghost" icon="phone">Call Us Directly</Button>
+ *   <Button variant="light" size="lg" arrow>See the app</Button>
+ *
+ * variant: primary (accent fill) | ghost (outline) | light (white fill) | link (text + arrow)
+ * Any other attribute (target, rel, data-*, type, aria-*) is passed through.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'ghost' | 'light' | 'link';
+  size?: 'sm' | 'md' | 'lg';
+  /** Icon shown before the label. */
+  icon?: IconName;
+  /** Show a trailing arrow that nudges on hover. On by default for primary and link. */
+  arrow?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const { href, variant = 'primary', size = 'md', icon, arrow, class: className, ...rest } = Astro.props;
+const showArrow = arrow ?? (variant === 'primary' || variant === 'link');
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class:list={['btn', `btn--${variant}`, `btn--${size}`, className]}
+  href={href}
+  type={href ? undefined : 'button'}
+  {...rest}
+>
+  {icon && <Icon name={icon} size={18} />}
+  <span class="btn__label"><slot /></span>
+  {showArrow && <Icon name="arrow-right" size={18} class="btn__arrow" />}
+</Tag>
+
+<style>
+  .btn {
+    --btn-bg: var(--accent);
+    --btn-fg: var(--on-accent);
+    --btn-border: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65em;
+    min-height: 3.1rem;
+    padding: 0.85em 1.5em;
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1.1;
+    white-space: nowrap;
+    color: var(--btn-fg);
+    background: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    border-radius: var(--radius);
+    transition:
+      background-color var(--dur-2) var(--ease-out),
+      border-color var(--dur-2) var(--ease-out),
+      color var(--dur-2) var(--ease-out),
+      box-shadow var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
+  }
+
+  .btn--sm {
+    min-height: 2.6rem;
+    padding: 0.6em 1.1em;
+    font-size: var(--step--2);
+  }
+
+  .btn--lg {
+    min-height: 3.25rem;
+    padding: 0.95em 1.7em;
+    font-size: var(--step--1);
+  }
+
+  .btn--primary {
+    box-shadow: 0 10px 30px -12px var(--glow);
+  }
+
+  .btn--primary:hover {
+    --btn-bg: var(--accent-strong);
+    box-shadow: 0 14px 38px -10px var(--glow);
+    transform: translateY(-1px);
+  }
+
+  .btn--ghost {
+    --btn-bg: rgb(255 255 255 / 0.03);
+    --btn-fg: var(--text);
+    --btn-border: var(--line-strong);
+    backdrop-filter: blur(6px);
+  }
+
+  .btn--ghost:hover {
+    --btn-bg: rgb(95 175 255 / 0.12);
+    --btn-border: var(--accent);
+  }
+
+  .btn--light {
+    --btn-bg: var(--white);
+    --btn-fg: #0c1e2f;
+  }
+
+  .btn--light:hover {
+    --btn-bg: var(--mist);
+    transform: translateY(-1px);
+  }
+
+  .btn--link {
+    --btn-bg: transparent;
+    --btn-fg: var(--accent);
+    min-height: 2.75rem;
+    padding: 0.4em 0;
+    border: 0;
+    border-radius: 4px;
+  }
+
+  .btn--link .btn__label {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size var(--dur-2) var(--ease-out);
+    padding-bottom: 0.2em;
+  }
+
+  .btn--link:hover .btn__label {
+    background-size: 100% 1px;
+  }
+
+  .btn :global(.btn__arrow) {
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .btn:hover :global(.btn__arrow) {
+    transform: translateX(4px);
+  }
+
+  .btn:active {
+    transform: translateY(0) scale(0.985);
+  }
+
+  @media (max-width: 30em) {
+    .btn {
+      white-space: normal;
+      text-align: center;
+    }
+  }
+</style>

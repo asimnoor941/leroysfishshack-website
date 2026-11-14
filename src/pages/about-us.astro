@@ -1,0 +1,11 @@
+---
+// STARTER page so the nav links resolve. Rebuild from reference/original-site/content/about-us.md.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+---
+
+<BaseLayout title="About" description="Placeholder description." breadcrumbs={[{ name: 'About', href: '/about-us/' }]}>
+  <PageHero eyebrow="About" title="About" lede="Placeholder." />
+  <CtaBand title="Ready to<br />Get Started?" />
+</BaseLayout>

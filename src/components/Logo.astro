@@ -1,0 +1,55 @@
+---
+/**
+ * PLACEHOLDER logo: the business name set as a wordmark.
+ * Replace with the real logo once we have it: put the files in src/assets/brand/,
+ * import them here and render with <Image> (see the Blackfin Fuels Logo.astro).
+ *
+ * layout="inline"  one line (header)
+ * layout="stacked" name over the tagline (footer)
+ */
+import { site } from '../data/site';
+
+interface Props {
+  layout?: 'inline' | 'stacked';
+  /** Approximate rendered height in CSS pixels. */
+  height?: number;
+  class?: string;
+}
+
+const { layout = 'inline', height = 34, class: className } = Astro.props;
+---
+
+<span class:list={['logo', `logo--${layout}`, className]} style={`--logo-h:${height}px`}>
+  <span class="logo__word">{site.name}</span>
+  {layout === 'stacked' && <span class="logo__tag">{site.tagline}</span>}
+</span>
+
+<style>
+  :global(a:has(> .logo)) {
+    text-decoration: none;
+  }
+  .logo {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: var(--text);
+    line-height: 1;
+  }
+  .logo__word {
+    font-family: var(--font-display);
+    font-size: calc(var(--logo-h) * 0.62);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .logo--stacked .logo__word {
+    font-size: calc(var(--logo-h) * 0.45);
+  }
+  .logo__tag {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+</style>

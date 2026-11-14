@@ -1,0 +1,195 @@
+---
+/**
+ * The opening block of every inner page: eyebrow, the page's single <h1>,
+ * a lede, optional buttons and an optional photo.
+ *
+ *   <PageHero eyebrow="Our Pricing" title="Pricing" lede="..." image={photo} imageAlt="...">
+ *     <Button href="/contact-us/">Get in Touch</Button>
+ *   </PageHero>
+ *
+ * layout  "split"  text left, framed photo right (default when an image is given)
+ *         "cover"  photo fills the hero behind the text under a navy wash
+ *         "plain"  no photo; contour-line background only
+ * Default slot: buttons under the lede. Slot "meta": stats or badges under the buttons.
+ * The hero slides under the transparent header, so it must be the first thing in <main>.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Contours from './Contours.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** CSS object-position for the photo, e.g. "50% 30%". */
+  imagePosition?: string;
+  layout?: 'split' | 'cover' | 'plain';
+  class?: string;
+}
+
+const { eyebrow, title, lede, image, imageAlt = '', imagePosition = '50% 50%', class: className } = Astro.props;
+const layout = Astro.props.layout ?? (image ? 'split' : 'plain');
+---
+
+<section class:list={['page-hero', `page-hero--${layout}`, className]}>
+  {
+    layout === 'cover' && image && (
+      <div class="page-hero__cover" aria-hidden={imageAlt ? undefined : 'true'}>
+        <Picture
+          src={image}
+          alt={imageAlt}
+          formats={['avif', 'webp']}
+          widths={[640, 960, 1280, 1920, 2560]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+          style={`object-position:${imagePosition}`}
+        />
+      </div>
+    )
+  }
+  <Contours class="page-hero__contours" />
+
+  <div class="page-hero__inner container">
+    <div class="page-hero__text">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1 class="page-hero__title" set:html={title} />
+      {lede && <p class="lede">{lede}</p>}
+      {
+        Astro.slots.has('default') && (
+          <div class="page-hero__actions cluster">
+            <slot />
+          </div>
+        )
+      }
+      {
+        Astro.slots.has('meta') && (
+          <div class="page-hero__meta">
+            <slot name="meta" />
+          </div>
+        )
+      }
+    </div>
+
+    {
+      layout === 'split' && image && (
+        <figure class="page-hero__figure frame">
+          <Picture
+            src={image}
+            alt={imageAlt}
+            formats={['avif', 'webp']}
+            widths={[480, 720, 960, 1280, 1600]}
+            sizes="(min-width: 60em) 46vw, 100vw"
+            loading="eager"
+            fetchpriority="high"
+            style={`object-position:${imagePosition}`}
+          />
+        </figure>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    z-index: var(--z-content);
+    isolation: isolate;
+    margin-top: calc(var(--header-h) * -1);
+    padding-top: calc(var(--header-h) + clamp(1.8rem, 0.96rem + 3vw, 3.85rem));
+    padding-bottom: clamp(3.5rem, 2rem + 6vw, 7rem);
+    overflow: clip;
+    background:
+      radial-gradient(90% 70% at 85% 0%, rgb(55 138 221 / 0.26), transparent 62%),
+      radial-gradient(70% 60% at 0% 100%, rgb(31 95 158 / 0.2), transparent 65%),
+      linear-gradient(180deg, var(--navy-800), var(--navy-900));
+    border-bottom: 1px solid var(--line);
+  }
+
+  .page-hero :global(.page-hero__contours) {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: -1;
+    opacity: 0.55;
+  }
+
+  .page-hero__inner {
+    display: grid;
+    gap: clamp(2.25rem, 1rem + 5vw, 5rem);
+    align-items: center;
+  }
+
+  .page-hero__text > :global(* + *) {
+    margin-top: 1.35rem;
+  }
+
+  .page-hero__title {
+    font-size: var(--step-5);
+    max-width: 14ch;
+  }
+
+  .page-hero__actions {
+    margin-top: 2.25rem;
+  }
+
+  .page-hero__meta {
+    margin-top: 2.75rem;
+  }
+
+  .page-hero__figure {
+    aspect-ratio: 4 / 3;
+    margin: 0;
+  }
+
+  .page-hero__figure :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* cover: photo behind the text */
+  .page-hero--cover {
+    min-height: min(46rem, 88svh);
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .page-hero--cover .page-hero__inner {
+    width: min(100% - 2 * var(--gutter), var(--container));
+  }
+
+  .page-hero__cover {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+
+  .page-hero__cover :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .page-hero__cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgb(7 17 25 / 0.92) 0%, rgb(7 17 25 / 0.68) 48%, rgb(7 17 25 / 0.3) 100%),
+      linear-gradient(180deg, rgb(9 23 36 / 0.7) 0%, transparent 34%, rgb(9 23 36 / 0.94) 100%);
+  }
+
+  @media (min-width: 60em) {
+    .page-hero--split .page-hero__inner {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+  }
+
+  @media (max-width: 59.99em) {
+    .page-hero__figure {
+      aspect-ratio: 3 / 2;
+    }
+  }
+</style>

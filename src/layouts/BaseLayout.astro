@@ -1,0 +1,170 @@
+---
+/**
+ * The page shell used by every page: <head>, header, footer and the site-wide script.
+ *
+ *   <BaseLayout title="Pricing" description="...">
+ *     ...sections...
+ *   </BaseLayout>
+ *
+ * title        Page title. " | <site name>" is appended unless fullTitle is set.
+ * fullTitle    Complete <title>, used as-is (home page).
+ * description  Meta description. Write one per page from that page's own copy.
+ * image        Social sharing image path (defaults to /og-default.jpg).
+ * noindex      Keep the page out of search engines.
+ * jsonLd       Extra schema.org objects for this page (FAQPage, BreadcrumbList ...).
+ * breadcrumbs  [{ name, href }] trail after Home; emitted as BreadcrumbList schema.
+ *
+ * Slot "head" adds tags to <head>.
+ */
+import '@fontsource/anton/400.css';
+import '@fontsource-variable/plus-jakarta-sans/wght.css';
+import '../styles/global.css';
+
+import antonWoff2 from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
+import jakartaWoff2 from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { contact, site, social } from '../data/site';
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  fullTitle?: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  breadcrumbs?: Crumb[];
+  bodyClass?: string;
+}
+
+const {
+  title,
+  fullTitle,
+  description,
+  image = '/og-default.jpg',
+  noindex = false,
+  jsonLd,
+  breadcrumbs,
+  bodyClass,
+} = Astro.props;
+
+const pageTitle = fullTitle ?? `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${site.url}/#organization`,
+  name: site.name,
+  url: `${site.url}/`,
+  logo: new URL('/icon-512.png', Astro.site).href,
+  description: site.description,
+  telephone: contact.phoneSchema,
+  email: contact.email,
+  sameAs: [social.facebook, social.instagram].filter(Boolean),
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${site.url}/#website`,
+  url: `${site.url}/`,
+  name: site.name,
+  publisher: { '@id': `${site.url}/#organization` },
+  inLanguage: 'en-US',
+};
+
+const breadcrumbList = breadcrumbs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Home', href: '/' }, ...breadcrumbs].map((crumb, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: crumb.name,
+        item: new URL(crumb.href, Astro.site).href,
+      })),
+    }
+  : undefined;
+
+const schemas = [organization, website, breadcrumbList, ...(Array.isArray(jsonLd) ? jsonLd : jsonLd ? [jsonLd] : [])].filter(
+  Boolean,
+);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {(noindex || import.meta.env.PUBLIC_DEMO === '1') && <meta name="robots" content="noindex, follow" />}
+
+    <meta name="theme-color" content="#091724" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+
+    <link rel="preload" as="font" type="font/woff2" href={antonWoff2} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={jakartaWoff2} crossorigin />
+
+    <!--
+      Runs before first paint: marks that JS is on (so scroll reveals may hide
+      content) and which kind of device this is (so app links can adapt). If the
+      main script never arrives, the reveal styles are switched off again.
+    -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var ua = navigator.userAgent || '';
+        var platform = 'desktop';
+        if (/android/i.test(ua)) platform = 'android';
+        else if (/iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) platform = 'ios';
+        root.setAttribute('data-platform', platform);
+        root.classList.add('js');
+        setTimeout(function () {
+          if (!window.__revealReady) root.classList.remove('js');
+        }, 3500);
+      })();
+    </script>
+
+    {schemas.map((schema) => <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />)}
+
+    <slot name="head" />
+  </head>
+  <body class={bodyClass}>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

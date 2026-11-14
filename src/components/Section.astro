@@ -1,0 +1,156 @@
+---
+/**
+ * A page section with consistent vertical rhythm and an optional heading block.
+ *
+ *   <Section id="fleet" eyebrow="Our Fleet" title="Built for one purpose" lede="...">
+ *     ...content...
+ *   </Section>
+ *
+ * tone    base (page navy) | raised (lighter navy band) | deep (near black) | light (paper, dark text)
+ * align   start | center  (heading block alignment)
+ * width   default | narrow
+ * pad     default | tight | none
+ * heading h2 (default) | h1  (use h1 only when the section is the page's first heading)
+ * scene   Name of the 3D scene beat this section belongs to (home page only).
+ *
+ * Slot "heading" replaces the generated heading block. Slot "aside" sits beside
+ * the heading on wide screens (a button, a short note).
+ */
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  lede?: string;
+  tone?: 'base' | 'raised' | 'deep' | 'light';
+  align?: 'start' | 'center';
+  width?: 'default' | 'narrow';
+  pad?: 'default' | 'tight' | 'none';
+  heading?: 'h1' | 'h2';
+  scene?: string;
+  class?: string;
+}
+
+const {
+  id,
+  eyebrow,
+  title,
+  lede,
+  tone = 'base',
+  align = 'start',
+  width = 'default',
+  pad = 'default',
+  heading = 'h2',
+  scene,
+  class: className,
+} = Astro.props;
+
+const Heading = heading;
+const hasHeading = Boolean(eyebrow || title || lede || Astro.slots.has('heading'));
+const headingId = id && title ? `${id}-title` : undefined;
+---
+
+<section
+  id={id}
+  class:list={['section', `section--${tone}`, `section--pad-${pad}`, { 'tone-light': tone === 'light' }, className]}
+  aria-labelledby={headingId}
+  data-scene={scene}
+>
+  <div class:list={['container', { 'container--narrow': width === 'narrow' }]}>
+    {
+      hasHeading && (
+        <div class:list={['section__head', `section__head--${align}`, { 'section__head--split': Astro.slots.has('aside') }]}>
+          <div class="section__head-main" data-reveal>
+            <slot name="heading">
+              {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+              {title && <Heading id={headingId} class="section__title h2" set:html={title} />}
+              {lede && <p class="lede">{lede}</p>}
+            </slot>
+          </div>
+          {Astro.slots.has('aside') && (
+            <div class="section__aside" data-reveal>
+              <slot name="aside" />
+            </div>
+          )}
+        </div>
+      )
+    }
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section {
+    position: relative;
+    z-index: var(--z-content);
+    padding-block: var(--section-pad);
+  }
+
+  .section--pad-tight {
+    padding-block: calc(var(--section-pad) * 0.6);
+  }
+
+  .section--pad-none {
+    padding-block: 0;
+  }
+
+  .section--raised {
+    background: linear-gradient(180deg, var(--navy-800), var(--navy-900));
+    border-block: 1px solid var(--line);
+  }
+
+  .section--deep {
+    background: linear-gradient(180deg, var(--ink), var(--abyss));
+  }
+
+  .section__head {
+    margin-bottom: clamp(2.25rem, 1.4rem + 3.4vw, 4.25rem);
+  }
+
+  .section__head-main > :global(* + *) {
+    margin-top: 1.1rem;
+  }
+
+  .section__head-main :global(.lede) {
+    margin-top: 1.4rem;
+  }
+
+  .section__head--center {
+    text-align: center;
+  }
+
+  .section__head--center :global(.lede) {
+    margin-inline: auto;
+  }
+
+  .section__head--center :global(.eyebrow) {
+    justify-content: center;
+  }
+
+  .section__title {
+    max-width: 18ch;
+  }
+
+  .section__head--center .section__title {
+    margin-inline: auto;
+  }
+
+  @media (min-width: 60em) {
+    .section__head--split {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-7);
+    }
+
+    .section__aside {
+      flex: none;
+      max-width: 24rem;
+    }
+  }
+
+  @media (max-width: 59.99em) {
+    .section__aside {
+      margin-top: var(--space-5);
+    }
+  }
+</style>

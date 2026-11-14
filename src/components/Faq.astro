@@ -1,0 +1,123 @@
+---
+/**
+ * Accordion of questions and answers built on <details>, so it works without
+ * JavaScript and is searchable in-page. Also emits FAQPage structured data.
+ *
+ *   <Faq items={[{ q: 'Do you carry diesel?', a: 'Not at this time ...' }]} />
+ *
+ * `a` may contain simple HTML (links, <strong>).
+ * schema  false to skip the structured data (use when a page shows the same
+ *         questions twice, or when another component already emits it).
+ */
+import Icon from './Icon.astro';
+
+export interface FaqItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  items: FaqItem[];
+  schema?: boolean;
+  class?: string;
+}
+
+const { items, schema = true, class: className } = Astro.props;
+
+const stripTags = (html: string) => html.replace(/<[^>]+>/g, '');
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: stripTags(item.a) },
+  })),
+};
+---
+
+<div class:list={['faq', className]} data-reveal-group>
+  {
+    items.map((item) => (
+      <details class="faq__item" data-reveal>
+        <summary class="faq__q">
+          <span>{item.q}</span>
+          <span class="faq__icon" aria-hidden="true">
+            <Icon name="chevron-down" size={20} />
+          </span>
+        </summary>
+        <div class="faq__a">
+          <p set:html={item.a} />
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+{schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+
+<style>
+  .faq {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .faq__item {
+    background: var(--surface-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: border-color var(--dur-2) var(--ease-out);
+  }
+
+  .faq__item[open],
+  .faq__item:hover {
+    border-color: var(--line-strong);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    min-height: 4rem;
+    padding: 1rem clamp(1.1rem, 0.8rem + 1vw, 1.75rem);
+    font-size: var(--step-0);
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text);
+    cursor: pointer;
+    list-style: none;
+    border-radius: var(--radius);
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    color: var(--accent);
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .faq__item[open] .faq__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq__a {
+    padding: 0 clamp(1.1rem, 0.8rem + 1vw, 1.75rem) 1.4rem;
+    max-width: 62em;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .faq__a :global(a) {
+    color: var(--accent);
+  }
+</style>

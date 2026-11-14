@@ -1,0 +1,9 @@
+{
+  "name": "qa-tools",
+  "private": true,
+  "type": "module",
+  "description": "Headless Chrome QA scripts (screenshots, page checks, weight). Uses the installed Chrome.",
+  "dependencies": {
+    "puppeteer-core": "^25.17.0"
+  }
+}

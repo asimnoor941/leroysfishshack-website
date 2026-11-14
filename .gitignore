@@ -1,0 +1,30 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environment
+.env
+.env.*
+!.env.example
+# demo settings hold no secrets (sample price, orders not sent)
+!.env.demo
+
+# hosting
+.wrangler/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Mirror of the old WordPress site: third-party content and stock images of
+# unknown licence. Kept locally only, never published.
+reference/
+
+# QA tool dependencies
+tools/qa/node_modules/

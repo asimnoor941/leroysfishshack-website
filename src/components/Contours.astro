@@ -1,0 +1,60 @@
+---
+/**
+ * The brand's line motif: a field of flowing contour lines, echoing the
+ * line-drawn fin in the logo. Purely decorative. Position it with a class.
+ *
+ *   <Contours class="hero__contours" lines={18} />
+ */
+interface Props {
+  lines?: number;
+  class?: string;
+}
+
+const { lines = 14, class: className } = Astro.props;
+const W = 1440;
+const H = 360;
+const uid = `contour-${Math.round(lines * 7919).toString(36)}`;
+
+const paths = Array.from({ length: lines }, (_, i) => {
+  const t = lines === 1 ? 0 : i / (lines - 1);
+  const baseY = 36 + t * (H - 72);
+  const amp = 9 + 30 * Math.sin(t * Math.PI);
+  const freq = 1.25 + t * 0.9;
+  const phase = t * 2.6;
+  let d = '';
+  for (let x = 0; x <= W; x += 20) {
+    const u = x / W;
+    const y = baseY + Math.sin(u * Math.PI * 2 * freq + phase) * amp + Math.sin(u * Math.PI * 5.2 + phase * 1.7) * amp * 0.22;
+    d += `${x === 0 ? 'M' : 'L'}${x} ${y.toFixed(1)}`;
+  }
+  return { d, opacity: (0.18 + 0.5 * Math.sin(t * Math.PI)).toFixed(2) };
+});
+---
+
+<svg
+  class:list={['contours', className]}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="none"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id={uid} x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5fafff" stop-opacity="0"></stop>
+      <stop offset="0.22" stop-color="#5fafff" stop-opacity="1"></stop>
+      <stop offset="0.78" stop-color="#9dcdff" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#5fafff" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+  {paths.map((p) => <path d={p.d} stroke={`url(#${uid})`} stroke-width="1" opacity={p.opacity} vector-effect="non-scaling-stroke"></path>)}
+</svg>
+
+<style>
+  .contours {
+    display: block;
+    width: 100%;
+    height: clamp(11rem, 6rem + 22vw, 24rem);
+    pointer-events: none;
+  }
+</style>

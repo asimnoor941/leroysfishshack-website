@@ -1,0 +1,55 @@
+---
+/**
+ * STARTER home page. Shows the building blocks and motion kinds working.
+ * Replace everything here with the new business's real content from
+ * reference/original-site/content/home.md once the live site is mirrored.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Stat from '../components/Stat.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Button from '../components/Button.astro';
+import { site, PRIMARY_CTA } from '../data/site';
+---
+
+<BaseLayout title={site.name} fullTitle={`${site.name} | ${site.tagline}`} description={site.description}>
+  <PageHero eyebrow="Starter" title="New site starter" lede="Placeholder content. The live site's copy goes here once it has been mirrored.">
+    <Button href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Button>
+  </PageHero>
+
+  <Section eyebrow="Pop-group" title="Cards pop in once" tone="raised">
+    <div class="grid grid--3" data-3d="pop-group">
+      <FeatureCard icon="shield-check" title="Card one" index="01">Placeholder text.</FeatureCard>
+      <FeatureCard icon="clock" title="Card two" index="02">Placeholder text.</FeatureCard>
+      <FeatureCard icon="star" title="Card three" index="03">Placeholder text.</FeatureCard>
+    </div>
+  </Section>
+
+  <Section eyebrow="Numbers" title="Count up on scroll">
+    <div class="grid grid--3">
+      <Stat value="100" unit="+" label="Placeholder" />
+      <Stat value="24" label="Placeholder" />
+      <Stat value="$0" label="Placeholder" />
+    </div>
+  </Section>
+
+  <Section eyebrow="Steps" title="Scroll-driven flip" tone="deep">
+    <Steps
+      steps={[
+        { title: 'Step one', text: 'Placeholder.' },
+        { title: 'Step two', text: 'Placeholder.' },
+        { title: 'Step three', text: 'Placeholder.' },
+      ]}
+    />
+  </Section>
+
+  <Section eyebrow="FAQ" title="Questions" width="narrow">
+    <Faq items={[{ q: 'Placeholder question?', a: 'Placeholder answer.' }]} schema={false} />
+  </Section>
+
+  <CtaBand title="Ready to<br />Get Started?" text="Placeholder." />
+</BaseLayout>

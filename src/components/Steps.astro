@@ -1,0 +1,132 @@
+---
+/**
+ * A numbered sequence joined by a line, for "how it works" content.
+ *
+ *   <Steps steps={[
+ *     { title: 'Get in touch', text: '...' },
+ *     { title: 'We Keep You Updated', text: '...' },
+ *   ]} />
+ *
+ * layout  "row" (side by side on wide screens) | "column" (always stacked)
+ * heading h3 (default) | h4
+ */
+interface Step {
+  title: string;
+  text: string;
+}
+
+interface Props {
+  steps: Step[];
+  layout?: 'row' | 'column';
+  heading?: 'h3' | 'h4';
+  class?: string;
+}
+
+const { steps, layout = 'row', heading = 'h3', class: className } = Astro.props;
+const Heading = heading;
+---
+
+<ol class:list={['steps', `steps--${layout}`, className]} role="list" data-reveal-group style={`--steps:${steps.length}`}>
+  {
+    steps.map((step, i) => (
+      <li class="steps__item" data-reveal>
+        <span class="steps__num numeral" aria-hidden="true">
+          {String(i + 1).padStart(2, '0')}
+        </span>
+        <div class="steps__body">
+          <Heading class="steps__title h4">{step.title}</Heading>
+          <p>{step.text}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    counter-reset: step;
+  }
+
+  .steps__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-bottom: 2.25rem;
+  }
+
+  .steps__item:last-child {
+    padding-bottom: 0;
+  }
+
+  /* the connecting line */
+  .steps__item::before {
+    content: '';
+    position: absolute;
+    top: 3.6rem;
+    bottom: 0.2rem;
+    left: 1.7rem;
+    width: 1px;
+    background: linear-gradient(180deg, var(--line-strong), transparent);
+  }
+
+  .steps__item:last-child::before {
+    display: none;
+  }
+
+  .steps__num {
+    display: grid;
+    place-items: center;
+    width: 3.4rem;
+    height: 3.4rem;
+    font-size: var(--step-1);
+    color: var(--accent);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+  }
+
+  .steps__title {
+    font-family: var(--font-body);
+    text-transform: none;
+    letter-spacing: -0.01em;
+    padding-top: 0.75rem;
+  }
+
+  .steps__body p {
+    margin-top: 0.55rem;
+    font-size: var(--step--1);
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 62em) {
+    .steps--row {
+      grid-template-columns: repeat(var(--steps), minmax(0, 1fr));
+      gap: clamp(1.5rem, 0.5rem + 2vw, 2.75rem);
+    }
+
+    .steps--row .steps__item {
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
+      padding-bottom: 0;
+    }
+
+    .steps--row .steps__item::before {
+      top: 1.7rem;
+      bottom: auto;
+      left: 4.1rem;
+      right: calc(clamp(1.5rem, 0.5rem + 2vw, 2.75rem) * -1 + 0.7rem);
+      width: auto;
+      height: 1px;
+      background: linear-gradient(90deg, var(--line-strong), var(--line));
+    }
+
+    .steps--row .steps__title {
+      padding-top: 0;
+    }
+  }
+</style>

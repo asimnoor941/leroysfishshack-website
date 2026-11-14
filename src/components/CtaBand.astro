@@ -1,0 +1,80 @@
+---
+/**
+ * The closing call to action used at the bottom of every inner page.
+ *
+ *   <CtaBand title="Ready to<br />Get Started?" text="..." />
+ *
+ * Defaults to the primary call to action + "Call Us Directly".
+ * Pass the default slot to replace the buttons.
+ */
+import Button from './Button.astro';
+import Contours from './Contours.astro';
+import { contact, PRIMARY_CTA } from '../data/site';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text?: string;
+  class?: string;
+}
+
+const { eyebrow = 'Get Started', title, text, class: className } = Astro.props;
+---
+
+<section class:list={['cta-band', className]}>
+  <Contours class="cta-band__contours" lines={12} />
+  <div class="cta-band__inner container" data-reveal>
+    <p class="eyebrow eyebrow--plain">{eyebrow}</p>
+    <h2 class="cta-band__title" set:html={title} />
+    {text && <p class="lede">{text}</p>}
+    <div class="cta-band__actions cluster">
+      <slot>
+        <Button href={PRIMARY_CTA.href} size="lg">{PRIMARY_CTA.label}</Button>
+        <Button href={contact.phoneHref} variant="ghost" size="lg" icon="phone" arrow={false}>Call Us Directly</Button>
+      </slot>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    z-index: var(--z-content);
+    isolation: isolate;
+    overflow: clip;
+    padding-block: var(--section-pad);
+    text-align: center;
+    background:
+      radial-gradient(70% 90% at 50% 110%, rgb(55 138 221 / 0.42), transparent 70%),
+      linear-gradient(180deg, var(--navy-900), #0a2038);
+    border-top: 1px solid var(--line);
+  }
+
+  .cta-band :global(.cta-band__contours) {
+    position: absolute;
+    inset: auto 0 0 0;
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  .cta-band__inner > :global(* + *) {
+    margin-top: 1.25rem;
+  }
+
+  .cta-band__title {
+    font-size: var(--step-5);
+    max-width: 16ch;
+    margin-inline: auto;
+  }
+
+  .cta-band :global(.lede) {
+    margin-inline: auto;
+    color: var(--text);
+    opacity: 0.86;
+  }
+
+  .cta-band__actions {
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+</style>
