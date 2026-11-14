@@ -135,40 +135,49 @@ function initRing(): void {
   const step = 360 / n;
   let radius = 0;
 
+  // A big, tilted "crown": cards ride a wave around a ring wider than the screen,
+  // the front plate comes toward the viewer and the side plates sweep off the edges.
+  let lift = 0;
+  let wave = 0;
   const layout = () => {
     const narrow = window.innerWidth < 760;
-    const w = narrow ? Math.min(window.innerWidth * 0.58, 230) : Math.min(Math.max(window.innerWidth * 0.18, 230), 300);
-    const h = Math.min(w * 1.42, window.innerHeight * 0.52);
+    const w = narrow ? Math.min(window.innerWidth * 0.5, 210) : Math.min(Math.max(window.innerWidth * 0.18, 240), 290);
+    const h = Math.min(w * 1.38, window.innerHeight * (narrow ? 0.42 : 0.44));
     section.style.setProperty('--card-w', `${w}px`);
     section.style.setProperty('--card-h', `${h}px`);
-    radius = (w / 2 / Math.tan(Math.PI / n)) * 1.08;
-    // CSS order matters: turn first, then push out along the turned axis.
+    radius = (w / 2 / Math.tan(Math.PI / n)) * 1.3;
+    lift = Math.min(radius * 0.26, 320); // how far the front plate leans out of the screen
+    wave = h * 0.09;
+    // CSS order matters: turn first, then push out along the turned axis, then ride the wave.
     cards.forEach((card, i) => {
-      card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px)`;
+      const y = Math.sin(((i * step * 3) * Math.PI) / 180) * wave;
+      card.style.transform = `rotateY(${i * step}deg) translateZ(${radius}px) translateY(${y}px)`;
     });
   };
   layout();
 
   const state = { turn: 0 };
   const paint = () => {
-    track.style.transform = `translateZ(${-radius}px) rotateX(-6deg) rotateY(${state.turn}deg)`;
+    const tilt = -3 + Math.sin((state.turn * Math.PI) / 90) * 1.5; // the wheel rocks a little as it turns
+    track.style.transform = `translateZ(${lift - radius}px) rotateX(${tilt}deg) rotateY(${state.turn}deg)`;
     cards.forEach((card, i) => {
       const angle = ((((i * step + state.turn) % 360) + 540) % 360) - 180; // -180..180, 0 = facing us
-      const facing = Math.cos((angle * Math.PI) / 180); // 1 front, -1 back
-      card.style.filter = `brightness(${0.45 + 0.55 * Math.max(facing, 0)})`;
-      card.style.zIndex = String(Math.round(facing * 100) + 100);
+      const facing = Math.max(Math.cos((angle * Math.PI) / 180), 0); // 1 front, 0 side and back
+      const front = Math.max(0, 1 - Math.abs(angle) / (step * 0.9)); // only the plate facing us lights up
+      card.style.filter = `brightness(${0.4 + 0.6 * facing})`;
+      card.style.setProperty('--glow', front.toFixed(3));
     });
   };
   paint();
 
   gsap.to(state, {
-    turn: -(360 - step),
+    turn: -(n / 2 - 1) * step, // one lap of the 11 dishes
     ease: 'none',
     onUpdate: paint,
     scrollTrigger: {
       trigger: section,
       start: 'top top',
-      end: () => `+=${window.innerHeight * 2.2}`,
+      end: () => `+=${window.innerHeight * 2.6}`,
       pin,
       scrub: 0.8,
       anticipatePin: 1,
