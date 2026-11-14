@@ -512,6 +512,12 @@ p {
 }
 
 /* ---------- light sections ---------- */
+/* Standard vertical rhythm for hand-built sections (home, inner pages, VisitSection, FaqSection). */
+.section-pad {
+  position: relative;
+  padding-block: var(--section-pad);
+}
+
 .tone-light {
   --bg: var(--sand);
   --surface: var(--white);

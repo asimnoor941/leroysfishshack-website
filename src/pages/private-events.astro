@@ -1,0 +1,272 @@
+---
+/**
+ * Private events (the River Room, up to 50 guests). Copy from
+ * reference/original-site/content/private-events.md (live wording, em dashes
+ * replaced). Booking is by phone only on the live site, so there is no form.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import VisitSection from '../components/VisitSection.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { contact, site } from '../data/site';
+
+import riverRoom from '../assets/photos/river-room.jpg';
+import riverRoomTable from '../assets/photos/river-room-table.jpg';
+import riverRoom2 from '../assets/photos/river-room-2.jpg';
+
+const facts = [
+  { icon: 'users', label: 'Max Capacity', value: '50 guests' },
+  { icon: 'building', label: 'Space', value: 'The River Room, private' },
+  { icon: 'map-pin', label: 'Location', value: "Fishermen's Village, Punta Gorda" },
+] as const;
+
+const faqs = [
+  {
+    q: 'How many guests can the River Room hold?',
+    a: "The River Room holds up to 50 guests. Give us a call and we'll talk through the best layout for your group size.",
+  },
+  {
+    q: 'Is there a food and beverage minimum?',
+    a: "Pricing and minimums depend on your date, guest count, and whether it's a full or partial buyout. Give us a call and we'll put together a custom quote.",
+  },
+  {
+    q: 'Can we build a custom menu for our event?',
+    a: "Yes. Menus can be built around the day's fresh catch, with plated, family-style, or stationed service depending on your event style.",
+  },
+  {
+    q: 'Can we add the rum bar or live music to our event?',
+    a: "Both are available as add-ons for private events. Let us know when you inquire and we'll include them in your quote.",
+  },
+  {
+    q: 'Do you require a deposit to book?',
+    a: "Booking details, including any deposit, are confirmed once we go over your date and event specifics together. Reach out and we'll walk you through it.",
+  },
+  {
+    q: 'Is parking available for our guests?',
+    a: "Yes, Fishermen's Village offers free on-site parking for all guests.",
+  },
+  {
+    q: 'Can we book an event outside of regular restaurant hours?',
+    a: 'Depending on availability, full buyouts can sometimes be arranged before opening or after close. Ask us when you inquire.',
+  },
+];
+---
+
+<BaseLayout
+  title="Private Events"
+  description={`Rent the River Room at ${site.name} for rehearsal dinners, birthdays, corporate gatherings and celebrations. Groups of up to 50 at Fishermen's Village, Punta Gorda.`}
+  breadcrumbs={[{ name: 'Private Events', href: '/private-events/' }]}
+>
+  <PageHero
+    layout="cover"
+    eyebrow="Private Events · Full & Partial Buyouts"
+    title="Host Your Next Event in the <em class='serif-i'>River Room</em>"
+    lede="Rent the River Room at Leroy's Fish Shack for rehearsal dinners, birthdays, corporate gatherings, and celebrations. Groups of up to 50, with fresh Gulf seafood and a rum bar at Fishermen's Village."
+    image={riverRoom}
+    imageAlt=""
+  >
+    <Button href={contact.phoneHref} size="lg" icon="phone" arrow={false}>Call to Book Your Event</Button>
+    <dl slot="meta" class="pe-facts">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt><Icon name={fact.icon} size={16} /> {fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </PageHero>
+
+  <!-- ===== THE SPACE ===== -->
+  <section class="space section-pad" id="space" aria-labelledby="space-title">
+    <div class="container">
+      <div class="space__head">
+        <p class="eyebrow">See the space</p>
+        <h2 id="space-title">The <em class="serif-i">River Room</em></h2>
+        <p class="lede">Our private River Room holds up to 50 guests.</p>
+      </div>
+
+      <div class="space__gallery">
+        <div class="space__photo space__photo--main" data-3d="table">
+          <Photo
+            src={riverRoom}
+            alt="The River Room at Leroy's Fish Shack, with framed marine artwork, a live-edge wood table, and round tables set for a private event"
+            ratio="4 / 3"
+            sizes="(min-width: 60em) 58vw, 92vw"
+            reveal={false}
+            class="frame"
+          />
+          <span class="space__badge" data-float><strong>50</strong> guests max</span>
+        </div>
+        <div class="space__photo" data-3d="swing" data-3d-strength="0.7">
+          <Photo
+            src={riverRoomTable}
+            alt="Long live-edge wood table and dark leather chairs set for a group in the River Room"
+            ratio="4 / 3"
+            sizes="(min-width: 60em) 34vw, 92vw"
+            reveal={false}
+            class="frame"
+          />
+        </div>
+        <div class="space__photo" data-3d="swing" data-3d-strength="0.7">
+          <Photo
+            src={riverRoom2}
+            alt="The banquette side of the River Room with tables set for guests"
+            ratio="4 / 3"
+            sizes="(min-width: 60em) 34vw, 92vw"
+            reveal={false}
+            class="frame"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CALL TO BOOK ===== -->
+  <CtaBand
+    eyebrow="Let's plan your event"
+    title="Call to Book <em class='serif-i'>Your Event</em>"
+    text="Tell us your date, guest count, and what you have in mind. We'll walk you through availability, menus, and pricing over the phone."
+  >
+    <Button href={contact.phoneHref} size="lg" icon="phone" arrow={false}>Call {contact.phoneDisplay}</Button>
+  </CtaBand>
+
+  <!-- ===== FAQ ===== -->
+  <FaqSection eyebrow="Private event questions" title="Frequently <em class='serif-i'>Asked</em>" items={faqs} />
+
+  <!-- ===== VISIT ===== -->
+  <VisitSection
+    eyebrow="On the water, on the harbor"
+    title="Find the <em class='serif-i'>Shack</em>"
+    sub="1200 Retta Esplanade"
+    items={[
+      { icon: 'map-pin', label: 'Address', html: `${contact.street}<br />${contact.city}, ${contact.region} ${contact.postcode}` },
+      { icon: 'phone', label: 'Phone', html: `<a href="${contact.phoneHref}">${contact.phoneDisplay}</a>` },
+      { icon: 'calendar', label: 'Events', html: 'Contact us for a private event tour and walkthrough of the River Room.' },
+    ]}
+  >
+    <Button href={contact.phoneHref} icon="phone" arrow={false}>Call to Book Your Event</Button>
+    <Button href={contact.directionsHref} variant="ghost" target="_blank" rel="noopener" icon="route" arrow={false}>Get Directions</Button>
+  </VisitSection>
+</BaseLayout>
+
+<style>
+  .pe-facts {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .pe-facts > div {
+    padding: 0.85rem 1.1rem;
+    border-radius: 14px;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: rgb(5 15 16 / 0.45);
+    backdrop-filter: blur(6px);
+  }
+
+  .pe-facts dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--eyebrow);
+  }
+
+  .pe-facts dd {
+    margin: 0.2rem 0 0;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--text);
+  }
+
+  @media (min-width: 48em) {
+    .pe-facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* ---------- the space ---------- */
+  .space {
+    overflow: clip;
+    background: var(--harbor-800);
+  }
+
+  .space__head {
+    max-width: 40rem;
+    margin-bottom: clamp(2rem, 1rem + 3vw, 3.25rem);
+  }
+
+  .space__head > * + * {
+    margin-top: 1rem;
+  }
+
+  .space__gallery {
+    display: grid;
+    gap: clamp(1rem, 0.5rem + 2vw, 1.75rem);
+  }
+
+  .space__photo {
+    position: relative;
+  }
+
+  .space__badge {
+    position: absolute;
+    right: 1rem;
+    top: -1.5rem;
+    display: grid;
+    place-items: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    text-align: center;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow:
+      0 18px 40px -16px rgb(0 0 0 / 0.7),
+      0 0 0 6px rgb(217 143 43 / 0.18),
+      0 0 40px rgb(217 143 43 / 0.5);
+  }
+
+  .space__badge strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 48em) {
+    .space__gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .space__photo--main {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 60em) {
+    .space__gallery {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      grid-template-rows: repeat(2, auto);
+      align-items: center;
+    }
+    .space__photo--main {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+    }
+  }
+</style>

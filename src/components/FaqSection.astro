@@ -1,0 +1,58 @@
+---
+/**
+ * Questions block: heading and a "call the shack" note on the left, the <Faq>
+ * accordion on the right (emits FAQPage schema).
+ *
+ *   <FaqSection eyebrow="Good to know" title="Frequently <em class='serif-i'>Asked</em>" items={faqs} />
+ */
+import Faq from './Faq.astro';
+import type { FaqItem } from './Faq.astro';
+import { contact } from '../data/site';
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  items: FaqItem[];
+}
+
+const { id = 'faq', eyebrow, title, items } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<section class="faqs section-pad" id={id} aria-labelledby={titleId}>
+  <div class="container faqs__grid">
+    <div class="faqs__head">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h2 id={titleId} set:html={title} />
+      <p class="muted faqs__note">Anything else? Call the shack at <a href={contact.phoneHref}>{contact.phoneDisplay}</a>.</p>
+    </div>
+    <Faq items={items} />
+  </div>
+</section>
+
+<style>
+  .faqs {
+    background: var(--harbor-900);
+  }
+
+  .faqs__grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .faqs__head > * + * {
+    margin-top: 1rem;
+  }
+
+  .faqs__note a {
+    color: var(--accent);
+  }
+
+  @media (min-width: 60em) {
+    .faqs__grid {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+      align-items: start;
+    }
+  }
+</style>

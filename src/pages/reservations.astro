@@ -1,0 +1,280 @@
+---
+/**
+ * Reservations. Copy from reference/original-site/content/reservations.md
+ * (live wording, em dashes replaced). Booking is by phone only on the live
+ * site (no online booking yet), so there is no form here.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/Section.astro';
+import FeatureCard from '../components/FeatureCard.astro';
+import Button from '../components/Button.astro';
+import Icon from '../components/Icon.astro';
+import VisitSection from '../components/VisitSection.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { contact, site } from '../data/site';
+
+import diningRoom from '../assets/photos/dining-room-mounts.jpg';
+
+const details = [
+  {
+    icon: 'clock',
+    title: 'Grace Period',
+    text: 'Tables are held for 15 minutes past your reservation time. Running late? A quick call keeps your table waiting.',
+  },
+  {
+    icon: 'calendar',
+    title: 'Cancellations',
+    text: 'Plans change. Just give us a call as early as you can so we can free up the table for other guests.',
+  },
+  {
+    icon: 'users',
+    title: 'Large Groups (9+)',
+    text: 'For parties of nine or more, please reach out through our <a href="/private-events/">Private Events</a> page instead of standard booking.',
+  },
+  {
+    icon: 'wave',
+    title: 'Sunset Seating',
+    text: 'Our harbor-view tables at sunset are the most requested time slot. Book a few days ahead when you can.',
+  },
+  {
+    icon: 'star',
+    title: 'Live Music Nights',
+    text: 'Weekends with live music fill up fast. Reserve early if you want a table close to the stage.',
+  },
+  {
+    icon: 'anchor',
+    title: 'Dress Code',
+    text: 'Fish shack casual: flip-flops or button-downs, either works. Leashed, well-behaved dogs are welcome on the patio.',
+  },
+] as const;
+
+const faqs = [
+  {
+    q: "Do I need a reservation to eat at Leroy's Fish Shack?",
+    a: 'Not required, but recommended, especially for sunset seating, weekends, and nights with live music. Walk-ins are always welcome as availability allows.',
+  },
+  {
+    q: 'How far in advance should I book?',
+    a: 'A few days ahead is ideal for weekend and sunset tables. Weeknight reservations can usually be made the same day.',
+  },
+  {
+    q: 'Can I book a table for a large group?',
+    a: 'We can take phone reservations for parties up to 8. For 9 or more guests, please contact us about a <a href="/private-events/">private event</a> or partial buyout instead.',
+  },
+  {
+    q: "What happens if I'm running late?",
+    a: "We hold reservations for about 15 minutes past the booked time. If you know you'll be later than that, a quick call to the shack keeps your table.",
+  },
+  {
+    q: 'Is there a cancellation fee?',
+    a: 'No fee for standard tables. We just ask for as much advance notice as possible so we can offer the table to other guests.',
+  },
+  {
+    q: 'Can I request a table with a harbor view?',
+    a: "Absolutely. Note it when you book (or mention it when you call) and we'll do our best to seat you along the water, especially for sunset.",
+  },
+];
+---
+
+<BaseLayout
+  title="Reservations"
+  description={`Reserve a waterfront table at ${site.name} in Fishermen's Village, Punta Gorda. Call ${contact.phoneDisplay}. Open daily at 11am, walk-ins welcome as availability allows.`}
+  breadcrumbs={[{ name: 'Reservations', href: '/reservations/' }]}
+>
+  <PageHero
+    layout="cover"
+    eyebrow="Punta Gorda, FL · Fishermen's Village · Charlotte Harbor"
+    title="Reserve Your <em class='serif-i'>Table</em>"
+    lede="Waterfront seating on Charlotte Harbor, fresh-off-the-boat Gulf seafood, and live music on weekends. Save your spot before you go, especially for sunset."
+    image={diningRoom}
+    imageAlt=""
+    imagePosition="50% 60%"
+  >
+    <Button href={contact.phoneHref} size="lg" icon="phone" arrow={false}>Call to Reserve</Button>
+  </PageHero>
+
+  <!-- ===== CALL ===== -->
+  <section class="book section-pad" id="call" aria-labelledby="book-title">
+    <div class="container book__grid">
+      <div class="book__copy">
+        <p class="eyebrow">Call to Reserve</p>
+        <h2 id="book-title">Reserve a Table <em class="serif-i">at Leroy's</em></h2>
+        <div class="book__card">
+          <span class="book__ring" data-float aria-hidden="true"><Icon name="phone" size={26} /></span>
+          <h3>Give us a call</h3>
+          <p>We're taking reservations by phone right now. Give us a call and we'll get you set up, no waiting required.</p>
+          <Button href={contact.phoneHref} size="lg" icon="phone" arrow={false}>Call {contact.phoneDisplay}</Button>
+        </div>
+      </div>
+
+      <div class="book__side">
+        <ul class="book__facts" role="list" data-3d="pop-group">
+          <li>
+            <span class="book__label"><Icon name="clock" size={18} /> Hours</span>
+            <span class="book__value">{contact.hours}</span>
+          </li>
+          <li>
+            <span class="book__label"><Icon name="users" size={18} /> Party Size</span>
+            <span class="book__value">1 to 8 guests by phone</span>
+            <span class="book__small">9+ guests: <a href="/private-events/">Private Events</a></span>
+          </li>
+          <li>
+            <span class="book__label"><Icon name="map-pin" size={18} /> Location</span>
+            <span class="book__value">Fishermen's Village</span>
+            <span class="book__small">{contact.city}, {contact.region}</span>
+          </li>
+        </ul>
+        <p class="book__note">
+          Walk-ins are always welcome as availability allows. A reservation just guarantees your table, especially
+          around sunset and on weekends with live music.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DETAILS ===== -->
+  <Section id="details" eyebrow="Good to know before you book" title="Reservation Details" tone="raised">
+    <div class="grid grid--3" data-reveal-group>
+      {
+        details.map((item) => (
+          <FeatureCard icon={item.icon} title={item.title}>
+            <Fragment set:html={item.text} />
+          </FeatureCard>
+        ))
+      }
+    </div>
+  </Section>
+
+  <!-- ===== VISIT ===== -->
+  <VisitSection
+    eyebrow="On the water, on the harbor"
+    title="Find Us at <em class='serif-i'>Fishermen's Village</em>"
+    sub="1200 Retta Esplanade"
+    items={[
+      { icon: 'map-pin', label: 'Address', html: `${contact.street}<br />${contact.city}, ${contact.region} ${contact.postcode}` },
+      { icon: 'clock', label: 'Hours', html: contact.hours },
+      { icon: 'phone', label: 'Phone', html: `<a href="${contact.phoneHref}">${contact.phoneDisplay}</a>` },
+      { icon: 'route', label: 'Parking', html: "Free on-site parking at Fishermen's Village." },
+    ]}
+  />
+
+  <!-- ===== FAQ ===== -->
+  <FaqSection eyebrow="Reservation questions" title="Frequently <em class='serif-i'>Asked</em>" items={faqs} />
+</BaseLayout>
+
+<style>
+  .book {
+    position: relative;
+    overflow: clip;
+    background:
+      radial-gradient(45% 60% at 18% 60%, rgb(217 143 43 / 0.14), transparent 70%),
+      var(--harbor-900);
+  }
+
+  .book__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: center;
+  }
+
+  .book__copy > * + * {
+    margin-top: 1.25rem;
+  }
+
+  /* The call card glows instead of moving. */
+  .book__card {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    justify-items: start;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.4rem);
+    margin-top: 1.75rem !important;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgb(240 178 92 / 0.35);
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.01) 60%), var(--harbor-800);
+    box-shadow:
+      0 30px 60px -30px rgb(0 0 0 / 0.8),
+      0 0 0 6px rgb(217 143 43 / 0.06),
+      0 0 60px -10px rgb(217 143 43 / 0.35);
+  }
+
+  .book__card h3 {
+    font-size: var(--step-2);
+  }
+
+  .book__card p {
+    color: var(--text-muted);
+    max-width: 34rem;
+  }
+
+  .book__ring {
+    position: absolute;
+    top: -1.4rem;
+    right: 1.4rem;
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    color: var(--on-accent);
+    background: var(--accent);
+    box-shadow:
+      0 0 0 6px rgb(217 143 43 / 0.18),
+      0 0 34px rgb(217 143 43 / 0.55);
+  }
+
+  .book__facts {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .book__facts li {
+    display: grid;
+    gap: 0.2rem;
+    padding: 1.1rem 1.3rem;
+    border-radius: var(--radius-md, 14px);
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.03);
+  }
+
+  .book__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--eyebrow);
+  }
+
+  .book__value {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--text);
+  }
+
+  .book__small {
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  .book__small a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .book__note {
+    margin-top: 1.25rem;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 60em) {
+    .book__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+  }
+</style>

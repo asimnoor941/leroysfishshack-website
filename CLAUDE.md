@@ -2,7 +2,7 @@
 
 Executive-grade, 3D, scroll-driven rebuild of https://leroysfishshack.com/ (waterfront seafood restaurant, Fishermen's Village, Punta Gorda FL). Same client as Blackfin Fuels (`C:\Projects\Blackfinfuels-Website`), different business. Started as a copy of the Blackfin engine.
 
-**Status (2026-11-14):** live site mirrored to `reference/original-site/` and audited (`docs/SITE-AUDIT.md`, `docs/BRAND.md`, `docs/ASSET-INVENTORY.md`). Brand tokens, fonts (Fraunces + Plus Jakarta Sans), logo and `src/data/site.ts` are real. Home page built (scenes in `src/scripts/home.ts`); `/private-events/`, `/reservations/` and a new HTML `/menu/` are next. Media is imported with `python -I scripts/import-assets.py`. Preview repo: `asimnoor941/leroysfishshack-website` (GitHub Pages).
+**Status (2026-11-14):** live site mirrored to `reference/original-site/` and audited (`docs/SITE-AUDIT.md`, `docs/BRAND.md`, `docs/ASSET-INVENTORY.md`). Brand tokens, fonts (Fraunces + Plus Jakarta Sans), logo and `src/data/site.ts` are real. All live pages built: `/`, `/reservations/`, `/private-events/` (the live sitemap has no others; `/hello-world/`, `/category/uncategorized/`, `/author/leroysfishshack/` are WordPress defaults, deliberately not rebuilt). Shared `VisitSection` and `FaqSection` components. Optional next: an HTML `/menu/`. Media is imported with `python -I scripts/import-assets.py`. Preview repo: `asimnoor941/leroysfishshack-website` (GitHub Pages).
 
 **No questions to the owner:** resolve conflicts ourselves (most specific source wins; e.g. private events = the River Room, up to 50 guests) and leave missing facts out. Local DNS can't resolve leroysfishshack.com: pin 160.153.0.117 (curl `--resolve`).
 

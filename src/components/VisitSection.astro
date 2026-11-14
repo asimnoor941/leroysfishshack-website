@@ -1,0 +1,145 @@
+---
+/**
+ * "Find us" block: details list on the left, Google map on the right (light tone).
+ *
+ *   <VisitSection eyebrow="On the water, on the harbor" title="Visit <em class='serif-i'>Leroy's</em>"
+ *     sub="Fishermen's Village, Punta Gorda" items={[{ icon: 'clock', label: 'Hours', html: contact.hours }]} />
+ *
+ * title   HTML allowed (for the italic accent word).
+ * items   Detail rows. `html` may contain simple HTML (links, <br />).
+ * Default slot replaces the buttons (Get Directions + Call the Shack).
+ * The map never moves (data-3d="none").
+ */
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import type { IconName } from './Icon.astro';
+import { contact } from '../data/site';
+
+export interface VisitItem {
+  icon: IconName;
+  label: string;
+  html: string;
+}
+
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  sub?: string;
+  items: VisitItem[];
+}
+
+const { id = 'visit', eyebrow, title, sub, items } = Astro.props;
+const titleId = `${id}-title`;
+---
+
+<section class="visit section-pad tone-light" id={id} aria-labelledby={titleId}>
+  <div class="container visit__grid">
+    <div class="visit__copy">
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h2 id={titleId} data-split set:html={title} />
+      {sub && <p class="visit__sub">{sub}</p>}
+      <dl class="visit__list">
+        {
+          items.map((item) => (
+            <div>
+              <dt><Icon name={item.icon} size={18} /> {item.label}</dt>
+              <dd set:html={item.html} />
+            </div>
+          ))
+        }
+      </dl>
+      <div class="cluster">
+        <slot>
+          <Button href={contact.directionsHref} target="_blank" rel="noopener" icon="route" arrow={false}>Get Directions</Button>
+          <Button href={contact.phoneHref} variant="ghost" icon="phone" arrow={false}>Call the Shack</Button>
+        </slot>
+      </div>
+    </div>
+    <div class="visit__map frame" data-3d="none">
+      <iframe
+        title="Leroy's Fish Shack location at Fishermen's Village, Punta Gorda"
+        src={contact.mapEmbed}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: stretch;
+  }
+
+  .visit__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .visit__sub {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .visit__list {
+    display: grid;
+    gap: 0.9rem;
+    margin-block: 1.5rem !important;
+  }
+
+  .visit__list > div {
+    display: grid;
+    gap: 0.25rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .visit__list dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .visit__list dd {
+    margin: 0;
+    color: var(--text);
+  }
+
+  .visit__list dd :global(a) {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .visit__map {
+    min-height: 22rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .visit__map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 22rem;
+    border: 0;
+  }
+
+  @media (min-width: 48em) {
+    .visit__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 60em) {
+    .visit__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+</style>
