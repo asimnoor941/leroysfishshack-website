@@ -208,13 +208,13 @@ const facts = [
 
   <!-- ===== KITCHEN RING ===== -->
   <section class="kitchen" id="kitchen" aria-labelledby="kitchen-title" data-ring-section>
-    <div class="kitchen__pin" data-ring-pin>
+    <div class="kitchen__pin">
       <div class="container kitchen__head">
         <p class="eyebrow">A taste of the menu</p>
         <h2 id="kitchen-title">Fresh From <em class="serif-i">Our Kitchen</em></h2>
         <p class="lede">A look at what's coming out of the kitchen at Leroy's Fish Shack.</p>
       </div>
-      <div class="ring" data-ring>
+      <div class="ring" data-ring tabindex="0" aria-label="Dishes. Use the left and right arrow keys to turn the plates.">
         <ul class="ring__track" role="list" data-ring-track>
           {
             // Two laps of the dishes make a ring wide enough to run off both screen edges.
@@ -237,7 +237,15 @@ const facts = [
           }
         </ul>
       </div>
-      <p class="kitchen__hint" aria-hidden="true">Keep scrolling to turn the plates</p>
+      <div class="kitchen__controls">
+        <button class="kitchen__btn" type="button" data-ring-prev aria-label="Previous dish">
+          <Icon name="arrow-right" size={20} class="kitchen__flip" />
+        </button>
+        <p class="kitchen__hint">Swipe or drag sideways to turn the plates</p>
+        <button class="kitchen__btn" type="button" data-ring-next aria-label="Next dish">
+          <Icon name="arrow-right" size={20} />
+        </button>
+      </div>
     </div>
   </section>
 
@@ -824,7 +832,7 @@ const facts = [
     min-height: 3.6em;
   }
 
-  .kitchen__hint {
+  .kitchen__controls {
     display: none;
   }
 
@@ -837,14 +845,16 @@ const facts = [
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-height: 100svh;
-    padding-block: calc(var(--header-h) + 1rem) 1.5rem;
+    min-height: min(100svh, 58rem);
+    padding-block: clamp(3rem, 2rem + 3vw, 5rem) clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
 
   .kitchen:global(.is-3d) .ring {
     position: relative;
-    flex: 1;
-    min-height: 24rem;
+    flex: none;
+    /* The front plate leans toward the viewer and shows about 1.5x its size. */
+    height: calc(var(--card-h, 22rem) * 1.62);
+    margin-bottom: calc(var(--card-h, 22rem) * 0.16);
     margin-top: 0.5rem;
     perspective: 1000px;
     perspective-origin: 50% 47%;
@@ -867,7 +877,7 @@ const facts = [
   .kitchen:global(.is-3d) .ring__track {
     position: absolute;
     left: 50%;
-    top: 47%;
+    top: 50%;
     width: 0;
     height: 0;
     padding: 0;
@@ -888,13 +898,63 @@ const facts = [
     height: calc(var(--card-h) - 3.6rem);
   }
 
-  .kitchen:global(.is-3d) .kitchen__hint {
-    display: block;
-    text-align: center;
+  .kitchen:global(.is-3d) .ring {
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .kitchen:global(.is-3d) .ring:global(.is-dragging) {
+    cursor: grabbing;
+  }
+
+  .kitchen:global(.is-3d) .ring :global(img) {
+    pointer-events: none;
+  }
+
+  .kitchen:global(.is-3d) .kitchen__controls {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding-inline: var(--gutter);
+  }
+
+  .kitchen__hint {
     font-size: var(--step--2);
-    letter-spacing: 0.18em;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--text-faint);
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .kitchen__btn {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.9rem;
+    height: 2.9rem;
+    color: var(--mint);
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.04);
+    box-shadow: 0 0 24px -6px rgb(139 227 192 / 0.35);
+    transition:
+      background-color var(--dur-2) var(--ease-out),
+      box-shadow var(--dur-2) var(--ease-out);
+  }
+
+  .kitchen__btn:hover {
+    background: rgb(139 227 192 / 0.12);
+    box-shadow: 0 0 30px -4px rgb(139 227 192 / 0.6);
+  }
+
+  .kitchen__btn :global(.kitchen__flip) {
+    transform: scaleX(-1);
   }
 
   /* ---------- menu ---------- */

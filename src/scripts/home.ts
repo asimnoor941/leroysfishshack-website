@@ -5,7 +5,8 @@
  *
  *   hero    video card straightens and comes forward, headline recedes
  *   ticker  facts strip slides sideways with the scroll
- *   ring    dishes stand in a 3D ring that turns while the section is pinned
+ *   ring    dishes stand in a 3D ring that turns sideways only (swipe, drag, Shift+wheel,
+ *           buttons, arrow keys), so up/down scrolling always moves the page
  *   split   [data-split] headlines hinge up word by word
  */
 import { gsap, ScrollTrigger } from './motion';
@@ -124,9 +125,9 @@ function initTicker(): void {
 
 function initRing(): void {
   const section = document.querySelector<HTMLElement>('[data-ring-section]');
-  const pin = document.querySelector<HTMLElement>('[data-ring-pin]');
+  const ring = document.querySelector<HTMLElement>('[data-ring]');
   const track = document.querySelector<HTMLElement>('[data-ring-track]');
-  if (!section || !pin || !track) return;
+  if (!section || !ring || !track) return;
   const cards = Array.from(track.children) as HTMLElement[];
   const n = cards.length;
   if (n < 3) return;
@@ -169,25 +170,77 @@ function initRing(): void {
     });
   };
   paint();
+  window.addEventListener('resize', () => {
+    layout();
+    paint();
+  });
 
-  gsap.to(state, {
-    turn: -(n / 2 - 1) * step, // one lap of the 11 dishes
-    ease: 'none',
-    onUpdate: paint,
-    scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: () => `+=${window.innerHeight * 2.6}`,
-      pin,
-      scrub: 0.8,
-      anticipatePin: 1,
-      refreshPriority: 1,
-      invalidateOnRefresh: true,
-      onRefresh: () => {
-        layout();
-        paint();
-      },
+  // ---- Turning is sideways only. Up/down scrolling always moves the page. ----
+  let target = 0;
+  const turnTo = (deg: number, duration = 0.7) => {
+    target = deg;
+    gsap.to(state, { turn: target, duration, ease: 'power3.out', overwrite: true, onUpdate: paint });
+  };
+  const nearest = () => Math.round(target / step) * step;
+  const snap = () => turnTo(nearest(), 0.8);
+  /** Degrees of turn per pixel of sideways movement: one card width = one plate. */
+  const degPerPx = () => step / ((Number.parseFloat(section.style.getPropertyValue('--card-w')) || 260) * 0.9);
+
+  // Trackpad side-swipe, or Shift + mouse wheel.
+  let snapTimer = 0;
+  ring.addEventListener(
+    'wheel',
+    (event) => {
+      const dx = event.shiftKey ? event.deltaX || event.deltaY : event.deltaX;
+      if (!dx || (!event.shiftKey && Math.abs(event.deltaY) >= Math.abs(dx))) return; // vertical: the page scrolls
+      event.preventDefault();
+      event.stopPropagation();
+      turnTo(target - dx * degPerPx(), 0.5);
+      window.clearTimeout(snapTimer);
+      snapTimer = window.setTimeout(snap, 160);
     },
+    { passive: false },
+  );
+
+  // Drag with the mouse, or swipe sideways with a finger (touch-action: pan-y leaves vertical swipes to the page).
+  let dragging = false;
+  let startX = 0;
+  let startTurn = 0;
+  let moved = 0;
+  ring.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    dragging = true;
+    moved = 0;
+    startX = event.clientX;
+    startTurn = target;
+    ring.classList.add('is-dragging');
+  });
+  window.addEventListener('pointermove', (event) => {
+    if (!dragging) return;
+    const dx = event.clientX - startX;
+    moved = Math.max(moved, Math.abs(dx));
+    turnTo(startTurn + dx * degPerPx() * 1.2, 0.35);
+  });
+  const release = () => {
+    if (!dragging) return;
+    dragging = false;
+    ring.classList.remove('is-dragging');
+    snap();
+  };
+  window.addEventListener('pointerup', release);
+  window.addEventListener('pointercancel', release);
+  ring.addEventListener('dragstart', (event) => event.preventDefault());
+
+  // Buttons and arrow keys.
+  const prev = () => turnTo(nearest() + step, 0.9);
+  const next = () => turnTo(nearest() - step, 0.9);
+  section.querySelector('[data-ring-prev]')?.addEventListener('click', prev);
+  section.querySelector('[data-ring-next]')?.addEventListener('click', next);
+  ring.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') prev();
+    else if (event.key === 'ArrowRight') next();
+    else return;
+    event.preventDefault();
   });
 }
 
@@ -196,7 +249,5 @@ if (!reduced) {
   initTicker();
   initRing();
   initSplit();
-  // Pinning adds space: re-measure every trigger on the page in order.
-  ScrollTrigger.sort();
   ScrollTrigger.refresh();
 }
