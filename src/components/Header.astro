@@ -18,7 +18,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
 <header class="site-header" data-header>
   <div class="site-header__inner container">
     <a class="site-header__logo" href="/" aria-label={`${site.name} home`}>
-      <Logo height={34} />
+      <Logo height={56} />
     </a>
 
     <nav class="nav" aria-label="Main">
@@ -82,7 +82,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
 
 <dialog class="mobile-menu" id="mobile-menu" aria-label="Menu" data-lenis-prevent>
   <div class="mobile-menu__top">
-    <a href="/" aria-label={`${site.name} home`}><Logo height={34} /></a>
+    <a href="/" aria-label={`${site.name} home`}><Logo height={56} /></a>
     <button class="menu-btn" type="button" data-menu-close>
       <Icon name="close" size={24} />
       <span class="visually-hidden">Close menu</span>
@@ -134,7 +134,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
   }
 
   .site-header[data-scrolled] {
-    background: rgb(9 23 36 / 0.82);
+    background: rgb(11 28 30 / 0.82);
     border-bottom-color: var(--line);
     backdrop-filter: blur(16px) saturate(140%);
     -webkit-backdrop-filter: blur(16px) saturate(140%);
@@ -236,7 +236,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
     min-width: 15rem;
     margin: 0;
     padding: 0.6rem;
-    background: rgb(12 30 47 / 0.96);
+    background: rgb(16 39 42 / 0.96);
     border: 1px solid var(--line-strong);
     border-radius: var(--radius);
     box-shadow: var(--shadow-2);
@@ -284,7 +284,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
 
   .nav__menu a:hover,
   .nav__menu a[aria-current='page'] {
-    background: rgb(95 175 255 / 0.1);
+    background: var(--tint);
     color: var(--text);
   }
 
@@ -383,8 +383,8 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
     border: 0;
     color: var(--text);
     background:
-      radial-gradient(120% 60% at 100% 0%, rgb(55 138 221 / 0.22), transparent 60%),
-      linear-gradient(180deg, var(--navy-800), var(--abyss));
+      radial-gradient(120% 60% at 100% 0%, rgb(62 142 134 / 0.22), transparent 60%),
+      linear-gradient(180deg, var(--harbor-800), var(--deep));
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -396,7 +396,7 @@ const isActiveTree = (href: string, children?: { href: string }[]) =>
   }
 
   .mobile-menu::backdrop {
-    background: var(--abyss);
+    background: var(--deep);
   }
 
   @keyframes menu-in {

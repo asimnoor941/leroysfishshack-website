@@ -1,8 +1,10 @@
-# New business website (starter)
+# Leroy's Fish Shack website
 
-Executive-grade, 3D, scroll-driven rebuild of a client's existing website. Same client as Blackfin Fuels (`C:\Projects\Blackfinfuels-Website`), different business. This repo started as a copy of the Blackfin engine with all Blackfin content removed.
+Executive-grade, 3D, scroll-driven rebuild of https://leroysfishshack.com/ (waterfront seafood restaurant, Fishermen's Village, Punta Gorda FL). Same client as Blackfin Fuels (`C:\Projects\Blackfinfuels-Website`), different business. Started as a copy of the Blackfin engine.
 
-**Status:** starter only. Waiting for the live site link. Every value in `src/data/site.ts`, the brand tokens in `global.css`, the logo and the pages are placeholders.
+**Status (2026-11-14):** live site mirrored to `reference/original-site/` and audited (`docs/SITE-AUDIT.md`, `docs/BRAND.md`, `docs/ASSET-INVENTORY.md`). Brand tokens, fonts (Fraunces + Plus Jakarta Sans), logo and `src/data/site.ts` are real. Home page built (scenes in `src/scripts/home.ts`); `/private-events/`, `/reservations/` and a new HTML `/menu/` are next. Media is imported with `python -I scripts/import-assets.py`. Preview repo: `asimnoor941/leroysfishshack-website` (GitHub Pages).
+
+**No questions to the owner:** resolve conflicts ourselves (most specific source wins; e.g. private events = the River Room, up to 50 guests) and leave missing facts out. Local DNS can't resolve leroysfishshack.com: pin 160.153.0.117 (curl `--resolve`).
 
 ## First steps once we have the live site link
 

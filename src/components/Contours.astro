@@ -41,10 +41,10 @@ const paths = Array.from({ length: lines }, (_, i) => {
 >
   <defs>
     <linearGradient id={uid} x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#5fafff" stop-opacity="0"></stop>
-      <stop offset="0.22" stop-color="#5fafff" stop-opacity="1"></stop>
-      <stop offset="0.78" stop-color="#9dcdff" stop-opacity="1"></stop>
-      <stop offset="1" stop-color="#5fafff" stop-opacity="0"></stop>
+      <stop offset="0" stop-color="#8be3c0" stop-opacity="0"></stop>
+      <stop offset="0.22" stop-color="#8be3c0" stop-opacity="1"></stop>
+      <stop offset="0.78" stop-color="#c9f2e1" stop-opacity="1"></stop>
+      <stop offset="1" stop-color="#8be3c0" stop-opacity="0"></stop>
     </linearGradient>
   </defs>
   {paths.map((p) => <path d={p.d} stroke={`url(#${uid})`} stroke-width="1" opacity={p.opacity} vector-effect="non-scaling-stroke"></path>)}

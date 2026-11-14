@@ -16,11 +16,12 @@
  *
  * Slot "head" adds tags to <head>.
  */
-import '@fontsource/anton/400.css';
+import '@fontsource-variable/fraunces/wght.css';
+import '@fontsource-variable/fraunces/wght-italic.css';
 import '@fontsource-variable/plus-jakarta-sans/wght.css';
 import '../styles/global.css';
 
-import antonWoff2 from '@fontsource/anton/files/anton-latin-400-normal.woff2?url';
+import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
 import jakartaWoff2 from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
 
 import Header from '../components/Header.astro';
@@ -60,14 +61,24 @@ const imageUrl = new URL(image, Astro.site).href;
 
 const organization = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Restaurant', 'Organization'],
   '@id': `${site.url}/#organization`,
   name: site.name,
   url: `${site.url}/`,
   logo: new URL('/icon-512.png', Astro.site).href,
+  image: new URL('/og-default.jpg', Astro.site).href,
   description: site.description,
   telephone: contact.phoneSchema,
-  email: contact.email,
+  servesCuisine: 'Seafood',
+  acceptsReservations: true,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: contact.street,
+    addressLocality: contact.city,
+    addressRegion: contact.region,
+    postalCode: contact.postcode,
+    addressCountry: 'US',
+  },
   sameAs: [social.facebook, social.instagram].filter(Boolean),
 };
 
@@ -109,7 +120,7 @@ const schemas = [organization, website, breadcrumbList, ...(Array.isArray(jsonLd
     <link rel="canonical" href={canonical} />
     {(noindex || import.meta.env.PUBLIC_DEMO === '1') && <meta name="robots" content="noindex, follow" />}
 
-    <meta name="theme-color" content="#091724" />
+    <meta name="theme-color" content="#0b1c1e" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -129,7 +140,7 @@ const schemas = [organization, website, breadcrumbList, ...(Array.isArray(jsonLd
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
 
-    <link rel="preload" as="font" type="font/woff2" href={antonWoff2} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={frauncesWoff2} crossorigin />
     <link rel="preload" as="font" type="font/woff2" href={jakartaWoff2} crossorigin />
 
     <!--

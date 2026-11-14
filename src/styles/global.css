@@ -9,45 +9,45 @@
 
 /* ---------- tokens ---------- */
 :root {
-  /* brand colour */
-  --abyss: #040b12;
-  --ink: #071119;
-  --navy-900: #091724;
-  --navy-800: #0c1e2f; /* brand navy */
-  --navy-700: #12283d;
-  --navy-600: #16283b;
-  --navy-500: #1d3a56;
-  --navy-400: #23405d;
-  --blue-700: #1f5f9e;
-  --blue-600: #2f7dcc;
-  --blue-500: #378add;
-  --blue-400: #4da3e8;
-  --blue-300: #5fafff; /* accent */
-  --blue-200: #9dcdff;
-  --blue-100: #c9d6e3;
-  --mist: #eaf4ff;
-  --paper: #f3f7fb;
+  /* brand colour: Leroy's Fish Shack (teal, mint roof, rum, buoy red, sand) */
+  --deep: #050f10;
+  --ink: #081517;
+  --harbor-900: #0b1c1e; /* page */
+  --harbor-800: #10272a; /* surface */
+  --harbor-700: #15312e; /* raised, the live site's dark teal */
+  --harbor-600: #1d403c;
+  --teal-600: #2c6a64;
+  --teal-500: #3e8e86;
+  --mint: #8be3c0; /* the logo roof */
+  --mint-soft: #c9f2e1;
+  --rum: #d98f2b;
+  --rum-soft: #f0b25c;
+  --rum-dk: #a6691c;
+  --buoy: #c1442e; /* sparingly: live dots, small marks */
+  --sand: #f6f4ee;
+  --sand-line: #e6e1d3;
   --white: #ffffff;
-  --signal: #ff8a4c; /* the orange from the truck livery; use sparingly */
 
   /* semantic */
-  --bg: var(--navy-900);
-  --surface: var(--navy-800);
-  --surface-raised: var(--navy-700);
-  --text: #eef4fb;
-  --text-muted: #a9bbcf;
-  --text-faint: #7f93a9;
-  --accent: var(--blue-300);
-  --accent-strong: var(--blue-200);
-  --on-accent: #04182b;
-  --line: rgb(157 205 255 / 0.14);
-  --line-strong: rgb(157 205 255 / 0.3);
-  --glow: rgb(95 175 255 / 0.22);
+  --bg: var(--harbor-900);
+  --surface: var(--harbor-800);
+  --surface-raised: var(--harbor-700);
+  --text: #eef3ef;
+  --text-muted: #a9bdb8;
+  --text-faint: #7d938e;
+  --accent: var(--rum);
+  --accent-strong: var(--rum-soft);
+  --on-accent: #1b1004;
+  --eyebrow: var(--mint);
+  --line: rgb(139 227 192 / 0.13);
+  --line-strong: rgb(139 227 192 / 0.28);
+  --glow: rgb(217 143 43 / 0.28);
+  --tint: rgb(139 227 192 / 0.08);
 
   /* type */
-  --font-display: 'Anton', 'Anton Fallback', Impact, 'Arial Narrow', sans-serif;
+  --font-display: 'Fraunces Variable', 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
   --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-script: 'Mrs Saint Delafield', 'Snell Roundhand', cursive;
+  --font-serif: var(--font-display);
 
   --step--2: clamp(0.72rem, 0.7rem + 0.08vw, 0.78rem);
   --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
@@ -102,13 +102,13 @@
   color-scheme: dark;
 }
 
-/* A system font shaped like Anton, so headlines barely move when the web font arrives. */
+/* Georgia sized like Fraunces, so headlines barely move when the web font arrives. */
 @font-face {
-  font-family: 'Anton Fallback';
-  src: local('Impact'), local('Haettenschweiler'), local('Arial Narrow Bold');
-  size-adjust: 97%;
-  ascent-override: 118%;
-  descent-override: 32%;
+  font-family: 'Fraunces Fallback';
+  src: local('Georgia');
+  size-adjust: 104%;
+  ascent-override: 92%;
+  descent-override: 24%;
   line-gap-override: 0%;
 }
 
@@ -222,10 +222,10 @@ h2,
 h3,
 .display {
   font-family: var(--font-display);
-  font-weight: 400;
-  text-transform: uppercase;
-  line-height: 0.98;
-  letter-spacing: 0.006em;
+  font-weight: 560;
+  font-optical-sizing: auto;
+  line-height: 1.02;
+  letter-spacing: -0.018em;
   text-wrap: balance;
 }
 
@@ -242,8 +242,8 @@ h2,
 h3,
 .h3 {
   font-size: var(--step-2);
-  line-height: 1.05;
-  letter-spacing: 0.012em;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 h4,
@@ -275,7 +275,7 @@ p {
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--eyebrow);
 }
 
 
@@ -287,11 +287,12 @@ p {
   color: var(--accent);
 }
 
-.script {
-  font-family: var(--font-script);
+/* Italic serif accent inside a heading: <em class="serif-i">. */
+.serif-i {
+  font-family: var(--font-serif);
+  font-style: italic;
   font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
+  color: var(--eyebrow);
 }
 
 .numeral {
@@ -478,7 +479,7 @@ p {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--accent-strong);
-  background: rgb(95 175 255 / 0.1);
+  background: var(--tint);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-pill);
 }
@@ -505,26 +506,28 @@ p {
   height: 1.1em;
   border-radius: 50%;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2304182b' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 8.4 2.6 2.6L12 5.4'/%3E%3C/svg%3E")
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%231b1004' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 8.4 2.6 2.6L12 5.4'/%3E%3C/svg%3E")
       center / 70% no-repeat,
     var(--accent);
 }
 
 /* ---------- light sections ---------- */
 .tone-light {
-  --bg: var(--paper);
+  --bg: var(--sand);
   --surface: var(--white);
   --surface-raised: var(--white);
-  --text: #0c1e2f;
-  --text-muted: #44566b;
-  --text-faint: #6b7c90;
-  --accent: #1c64ad;
-  --accent-strong: #154f8c;
+  --text: #16201f;
+  --text-muted: #4a5654;
+  --text-faint: #6d7876;
+  --accent: var(--teal-600);
+  --accent-strong: #22544f;
   --on-accent: #ffffff;
-  --line: rgb(12 30 47 / 0.12);
-  --line-strong: rgb(12 30 47 / 0.24);
-  --shadow-1: 0 14px 34px -20px rgb(12 30 47 / 0.35);
-  --shadow-2: 0 30px 60px -30px rgb(12 30 47 / 0.4);
+  --eyebrow: var(--teal-600);
+  --line: rgb(22 32 31 / 0.12);
+  --line-strong: rgb(22 32 31 / 0.24);
+  --tint: rgb(62 142 134 / 0.08);
+  --shadow-1: 0 14px 34px -20px rgb(22 32 31 / 0.35);
+  --shadow-2: 0 30px 60px -30px rgb(22 32 31 / 0.4);
   background: var(--bg);
   color: var(--text);
   color-scheme: light;

@@ -1,8 +1,12 @@
 {
-  "name": "Business Name",
-  "short_name": "Business",
+  "name": "Leroy's Fish Shack",
+  "short_name": "Leroy's",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#091724",
-  "theme_color": "#091724"
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "background_color": "#0b1c1e",
+  "theme_color": "#0b1c1e"
 }

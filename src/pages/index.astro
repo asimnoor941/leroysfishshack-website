@@ -1,55 +1,1339 @@
 ---
 /**
- * STARTER home page. Shows the building blocks and motion kinds working.
- * Replace everything here with the new business's real content from
- * reference/original-site/content/home.md once the live site is mirrored.
+ * Home. Copy from reference/original-site/content/home.md (live wording, em
+ * dashes replaced). Scroll scenes for this page live in src/scripts/home.ts:
+ *   hero    the video card straightens up and the headline recedes
+ *   ticker  the facts strip slides with the scroll
+ *   ring    the dishes stand in a 3D ring that turns as the section is pinned
+ *   split   [data-split] headlines hinge up word by word
+ * Everything else uses the shared data-3d kinds from motion.ts.
  */
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHero from '../components/PageHero.astro';
-import Section from '../components/Section.astro';
-import FeatureCard from '../components/FeatureCard.astro';
-import Stat from '../components/Stat.astro';
-import Steps from '../components/Steps.astro';
-import Faq from '../components/Faq.astro';
-import CtaBand from '../components/CtaBand.astro';
 import Button from '../components/Button.astro';
-import { site, PRIMARY_CTA } from '../data/site';
+import Icon from '../components/Icon.astro';
+import Photo from '../components/Photo.astro';
+import Faq from '../components/Faq.astro';
+import { contact, links, site, PRIMARY_CTA } from '../data/site';
+
+import diningMounts from '../assets/photos/dining-room-mounts.jpg';
+import rumBar from '../assets/photos/rum-bar.jpg';
+import riverRoom from '../assets/photos/river-room.jpg';
+import riverRoomTable from '../assets/photos/river-room-table.jpg';
+import menu1 from '../assets/photos/menu-1.png';
+import menu2 from '../assets/photos/menu-2.png';
+import giftCard from '../assets/photos/e-gift-card.png';
+
+import basmati from '../assets/photos/basmati-rice-bowl.jpg';
+import brisket from '../assets/photos/brisket-and-ribs.jpg';
+import buffalo from '../assets/photos/buffalo-shrimp.jpg';
+import calamari from '../assets/photos/calamari.jpg';
+import salad from '../assets/photos/house-salad.jpg';
+import lasagna from '../assets/photos/seafood-lasagna.jpg';
+import paella from '../assets/photos/seafood-paella.jpg';
+import stew from '../assets/photos/seafood-stew.jpg';
+import fishDip from '../assets/photos/smoked-fish-dip.jpg';
+import grouper from '../assets/photos/tropical-grouper.jpg';
+import zucchini from '../assets/photos/zucchini-noodle-bowl.jpg';
+
+const dishes = [
+  { img: paella, name: 'Seafood Paella', alt: 'Seafood Paella with clams, mussels, shrimp and a charred lemon half' },
+  { img: grouper, name: 'Tropical Grouper', alt: 'Tropical Grouper: a grouper fillet in golden sauce over rice with a grilled lemon half' },
+  { img: buffalo, name: 'Buffalo Shrimp', alt: 'Buffalo Shrimp: sauced fried shrimp topped with crumbled cheese and green onion on a white plate' },
+  { img: zucchini, name: 'Zucchini Noodle Bowl with Grilled Shrimp', alt: 'A grilled shrimp skewer over zucchini noodles, mushrooms and cherry tomatoes' },
+  { img: fishDip, name: 'Smoked Fish Dip', alt: 'Smoked Fish Dip: a mound of dip topped with green onion, surrounded by warm flatbread wedges' },
+  { img: basmati, name: 'Basmati Rice Bowl with Fresh Catch', alt: 'Glazed fish fillet over basmati rice with wilted spinach in a white bowl' },
+  { img: calamari, name: 'Calamari', alt: 'Crispy fried calamari in a bowl with red dipping sauce' },
+  { img: lasagna, name: 'Seafood Lasagna', alt: 'Seafood Lasagna: baked and bubbling with melted cheese and green onion, served with toasted bread' },
+  { img: stew, name: 'Seafood Stew', alt: 'Seafood Stew: a bowl of shrimp and seafood in a rich tomato broth, served with toasted bread' },
+  { img: salad, name: 'House Salad with Grilled Chicken', alt: 'Sliced grilled chicken over greens with croutons, cherry tomatoes, cucumber and carrots' },
+  { img: brisket, name: 'Brisket and Ribs', alt: 'Brisket and Ribs with a dark, peppery bark, resting on the racks of a smoker' },
+];
+
+const pours = [
+  { name: 'Aged 12 Year', text: 'Smooth, oak-forward, notes of caramel. Served neat over the ice ball.' },
+  { name: 'Single Barrel Reserve', text: 'Rich and full-bodied, drawn one barrel at a time.' },
+  { name: 'Cask Strength', text: 'Bold, high-proof pour for the serious sipper.' },
+  { name: 'Rare & Limited', text: "Small-batch releases. Ask your bartender what's pouring." },
+];
+
+const faqs = [
+  {
+    q: "Where exactly is Leroy's Fish Shack?",
+    a: "We're inside Fishermen's Village at 1200 Retta Esplanade, Unit J33-35, Punta Gorda, FL 33950, right on Charlotte Harbor. Free parking is available on-site.",
+  },
+  {
+    q: 'Do I need a reservation?',
+    a: 'Reservations are highly recommended, especially for sunset seating and weekends. Walk-ins are welcome as availability allows.',
+  },
+  {
+    q: "What's the dress code?",
+    a: 'Fish shack casual. Flip-flops are just as welcome as button-down shirts. Come as you are, off the boat or off the golf course.',
+  },
+  {
+    q: 'Is the seafood really local?',
+    a: "Yes. Our commercial fishing partners deliver the catch straight to our dock. You can watch it happen live on our patio webcam. What's on the menu changes with what came in that day.",
+  },
+  { q: 'Do you have live music?', a: 'We do. Live music on the patio most weekends.' },
+  { q: 'Can I bring my dog?', a: 'Well-behaved leashed dogs are welcome on our outdoor patio seating.' },
+  {
+    q: 'Do you host private events?',
+    a: 'Yes. Our River Room is available for private groups, rehearsal dinners, birthdays, and corporate gatherings, overlooking the harbor. See <a href="/private-events/">Private Events</a> or call the shack to check availability.',
+  },
+];
+
+const facts = [
+  ['Source', 'Locally Harvested'],
+  ['Bar', 'High-End Sipping Rums'],
+  ['Vibe', 'Flip-Flops or Button-Downs'],
+  ['Hours', 'Now Open, 11am Daily'],
+];
 ---
 
-<BaseLayout title={site.name} fullTitle={`${site.name} | ${site.tagline}`} description={site.description}>
-  <PageHero eyebrow="Starter" title="New site starter" lede="Placeholder content. The live site's copy goes here once it has been mirrored.">
-    <Button href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Button>
-  </PageHero>
+<BaseLayout
+  title={site.name}
+  fullTitle="Leroy's Fish Shack | Waterfront Seafood Restaurant | Punta Gorda, FL."
+  description={site.description}
+  bodyClass="home"
+>
+  <link slot="head" rel="preload" as="image" href="/media/hero-poster.jpg" fetchpriority="high" />
 
-  <Section eyebrow="Pop-group" title="Cards pop in once" tone="raised">
-    <div class="grid grid--3" data-3d="pop-group">
-      <FeatureCard icon="shield-check" title="Card one" index="01">Placeholder text.</FeatureCard>
-      <FeatureCard icon="clock" title="Card two" index="02">Placeholder text.</FeatureCard>
-      <FeatureCard icon="star" title="Card three" index="03">Placeholder text.</FeatureCard>
+  <!-- ===== HERO ===== -->
+  <section class="hero" data-hero aria-labelledby="hero-title">
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="hero__inner container">
+      <div class="hero__copy" data-hero-copy>
+        <p class="hero__status">
+          <span class="hero__dot" aria-hidden="true"></span>
+          Now Open, 11am Daily <span class="hero__sep" aria-hidden="true">/</span> Rum Bar &amp; Live Music on the Water
+        </p>
+        <p class="eyebrow">Punta Gorda, FL · Fishermen's Village · Charlotte Harbor</p>
+        <h1 id="hero-title" class="hero__title">
+          Leroy's<br />Fish Shack
+          <em class="serif-i hero__tag">From our boats to your table</em>
+        </h1>
+        <p class="lede hero__lede">
+          Locally harvested, Florida-fresh seafood off the Gulf. Upscale plates, laid-back waterfront shack.
+          Flip-flops or button-downs, either works.
+        </p>
+        <div class="cluster hero__ctas">
+          <Button href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</Button>
+          <Button href={contact.phoneHref} variant="ghost" icon="phone" arrow={false}>Call to Reserve</Button>
+        </div>
+        <a class="hero__cam" href="#dock"><Icon name="play" size={16} /> Watch the Live Dock Cam</a>
+      </div>
+
+      <div class="hero__stage" aria-hidden="true">
+        <div class="hero__card" data-hero-card>
+          <video
+            class="hero__video"
+            src="/media/hero.mp4"
+            poster="/media/hero-poster.jpg"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            data-hero-video
+          ></video>
+          <span class="hero__badge">
+            <Icon name="map-pin" size={14} /> Dockside on Charlotte Harbor
+          </span>
+        </div>
+      </div>
     </div>
-  </Section>
+  </section>
 
-  <Section eyebrow="Numbers" title="Count up on scroll">
-    <div class="grid grid--3">
-      <Stat value="100" unit="+" label="Placeholder" />
-      <Stat value="24" label="Placeholder" />
-      <Stat value="$0" label="Placeholder" />
+  <!-- ===== FACTS TICKER ===== -->
+  <div class="ticker-wrap">
+  <div class="ticker" aria-label="At a glance">
+    <ul class="ticker__track" role="list" data-ticker>
+      {
+        [0, 1, 2].map((copy) =>
+          facts.map(([k, v]) => (
+            <li class="ticker__item" aria-hidden={copy > 0 ? 'true' : undefined}>
+              <span class="ticker__k">{k}</span>
+              <span class="ticker__v">{v}</span>
+              <span class="ticker__star" aria-hidden="true">✦</span>
+            </li>
+          )),
+        )
+      }
+    </ul>
+  </div>
+  </div>
+
+  <!-- ===== STORY ===== -->
+  <section class="story section-pad" id="story" aria-labelledby="story-title">
+    <div class="container story__grid">
+      <div class="story__copy">
+        <p class="eyebrow">Locally Harvested · Florida Fresh</p>
+        <h2 id="story-title" class="story__title" data-split>From our boats to <em class="serif-i">your table</em></h2>
+        <p class="lede">
+          We source directly from local Gulf commercial fishermen, bringing the freshest catch available to our dock at
+          Fishermen's Village. Every fish is professionally harvested and expertly handled to ensure exceptional flavor
+          and freshness. The menu follows the Gulf, showcasing the best seafood the season has to offer.
+        </p>
+      </div>
+
+      <div class="story__view">
+        <div class="story__window" data-3d="tilt" data-3d-strength="0.8">
+          <Photo
+            src={diningMounts}
+            alt="Leroy's Fish Shack dining room, waterfront tables and shark and tarpon mounts overhead"
+            ratio="4 / 3"
+            sizes="(min-width: 60em) 52vw, 100vw"
+            reveal={false}
+            class="frame"
+          />
+          <span class="story__caption">Harbor views from every table</span>
+        </div>
+      </div>
+
+      <div class="story__detail">
+        <h3>Designed around the view</h3>
+        <p class="muted">
+          Every detail inside Leroy's Fish Shack was thoughtfully reimagined to showcase Charlotte Harbor while creating a
+          warm, welcoming place to gather to enjoy fresh Florida seafood.
+        </p>
+        <ul class="checklist" data-3d="pop-group">
+          <li>Locally harvested, delivered dockside straight from the boat</li>
+          <li>Upscale plates, no-fuss atmosphere. Flip-flops or button-downs, either works</li>
+          <li>Rum bar with rare sipping rums and live music. Keys vibes on Charlotte Harbor</li>
+        </ul>
+        <Button href="#dock" variant="link">See the Harbor Live</Button>
+      </div>
     </div>
-  </Section>
+  </section>
 
-  <Section eyebrow="Steps" title="Scroll-driven flip" tone="deep">
-    <Steps
-      steps={[
-        { title: 'Step one', text: 'Placeholder.' },
-        { title: 'Step two', text: 'Placeholder.' },
-        { title: 'Step three', text: 'Placeholder.' },
-      ]}
-    />
-  </Section>
+  <!-- ===== KITCHEN RING ===== -->
+  <section class="kitchen" id="kitchen" aria-labelledby="kitchen-title" data-ring-section>
+    <div class="kitchen__pin" data-ring-pin>
+      <div class="container kitchen__head">
+        <p class="eyebrow">A taste of the menu</p>
+        <h2 id="kitchen-title">Fresh From <em class="serif-i">Our Kitchen</em></h2>
+        <p class="lede">A look at what's coming out of the kitchen at Leroy's Fish Shack.</p>
+      </div>
+      <div class="ring" data-ring>
+        <ul class="ring__track" role="list" data-ring-track>
+          {
+            dishes.map((dish) => (
+              <li class="ring__card">
+                <figure>
+                  <Picture
+                    src={dish.img}
+                    alt={dish.alt}
+                    formats={['avif', 'webp']}
+                    widths={[320, 520, 720]}
+                    sizes="(min-width: 60em) 300px, 62vw"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <figcaption>{dish.name}</figcaption>
+                </figure>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <p class="kitchen__hint" aria-hidden="true">Keep scrolling to turn the plates</p>
+    </div>
+  </section>
 
-  <Section eyebrow="FAQ" title="Questions" width="narrow">
-    <Faq items={[{ q: 'Placeholder question?', a: 'Placeholder answer.' }]} schema={false} />
-  </Section>
+  <!-- ===== MENU ===== -->
+  <section class="menu section-pad tone-light" id="menu" aria-labelledby="menu-title">
+    <div class="container menu__grid">
+      <div class="menu__copy">
+        <p class="eyebrow">Straight off the boat</p>
+        <h2 id="menu-title" data-split>Our <em class="serif-i">Menu</em></h2>
+        <p class="lede">Fresh Gulf seafood, locally caught favorites, and something for everyone.</p>
+        <div class="cluster">
+          <Button href={contact.phoneHref} icon="phone" arrow={false}>Call to Reserve</Button>
+          <Button href={PRIMARY_CTA.href} variant="link">{PRIMARY_CTA.label}</Button>
+        </div>
+      </div>
+      <div class="menu__boards" data-3d="table" data-3d-strength="0.9">
+        {
+          [
+            { img: menu1, alt: "Leroy's Fish Shack menu, page 1", label: 'Page 1' },
+            { img: menu2, alt: "Leroy's Fish Shack menu, page 2", label: 'Page 2' },
+          ].map((m, i) => (
+            <a class={`menu__board menu__board--${i + 1}`} href={m.img.src} target="_blank" rel="noopener" data-hover-tilt="5">
+              <Picture src={m.img} alt={m.alt} formats={['avif', 'webp']} widths={[420, 820]} sizes="(min-width: 60em) 24vw, 46vw" loading="lazy" />
+              <span class="menu__open">
+                Open {m.label} <Icon name="arrow-up-right" size={14} />
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
 
-  <CtaBand title="Ready to<br />Get Started?" text="Placeholder." />
+  <!-- ===== RUM BAR ===== -->
+  <section class="rum section-pad" id="rum-bar" aria-labelledby="rum-title">
+    <div class="container rum__grid">
+      <div class="rum__photo" data-3d="swing" data-3d-from="left">
+        <div class="rum__frame frame">
+          <div class="rum__parallax" data-3d="depth" data-depth="-0.08">
+            <Photo src={rumBar} alt="The rum bar at Leroy's Fish Shack, stocked with high-end sipping rums" ratio="3 / 4" sizes="(min-width: 60em) 40vw, 100vw" reveal={false} />
+          </div>
+        </div>
+      </div>
+      <div class="rum__copy">
+        <p class="eyebrow">Keys Vibes, Harbor Views</p>
+        <h2 id="rum-title" data-split>The <em class="serif-i">Rum Bar</em></h2>
+        <p class="lede">
+          This isn't a cocktail bar. It's a curated collection of high-end sipping rums, poured over a hand-cut ice ball
+          and savored the way you'd enjoy a fine bourbon.
+        </p>
+        <ol class="pours" role="list" data-3d="pop-group">
+          {
+            pours.map((p, i) => (
+              <li class="pour" data-hover-tilt="6">
+                <span class="pour__n">0{i + 1}</span>
+                <div>
+                  <h3 class="pour__name">{p.name}</h3>
+                  <p>{p.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DOCK CAM ===== -->
+  <section class="dock section-pad" id="dock" aria-labelledby="dock-title">
+    <div class="container">
+      <div class="dock__head">
+        <div>
+          <p class="eyebrow">Watch the Working Waterfront</p>
+          <h2 id="dock-title" data-split>Grab a seat and watch <em class="serif-i">the boats come in.</em></h2>
+        </div>
+        <div class="dock__intro">
+          <p class="muted">
+            Our patio cams stream live from Charlotte Harbor, right where the commercial boats unload. Can't make it in?
+            Pull up the feed from home and watch the same water our catch comes from.
+          </p>
+          <ul class="checklist">
+            <li>Live 24/7 from the patio, rain or shine</li>
+            <li>Watch the fishing fleet unload right at our dock</li>
+            <li>Beautiful live Charlotte Harbor sunsets</li>
+          </ul>
+        </div>
+      </div>
+      <div class="dock__cams">
+        {
+          [
+            { src: links.camLeft, label: 'Live Camera Left', title: "Leroy's Fish Shack live dock cam, left", from: 'left' },
+            { src: links.camRight, label: 'Live Camera Right', title: "Leroy's Fish Shack live dock cam, right", from: 'right' },
+          ].map((cam) => (
+            <figure class="cam" data-3d="swing" data-3d-from={cam.from}>
+              <div class="cam__screen">
+                <iframe src={cam.src} title={cam.title} loading="lazy" allowfullscreen></iframe>
+              </div>
+              <figcaption class="cam__label">
+                <span class="cam__live"><span class="cam__dot" aria-hidden="true"></span>Live</span>
+                {cam.label}
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRIVATE EVENTS ===== -->
+  <section class="events section-pad" id="events" aria-labelledby="events-title">
+    <div class="container events__grid">
+      <div class="events__copy">
+        <p class="eyebrow">Weddings, Rehearsal Dinners &amp; Private Parties</p>
+        <h2 id="events-title" data-split>Host your next event <em class="serif-i">at Leroy's</em></h2>
+        <p class="lede">
+          Our River Room is available for private buyouts: rehearsal dinners, birthdays, corporate gatherings, and
+          everything in between, all with a front-row seat to Charlotte Harbor.
+        </p>
+        <ul class="checklist">
+          <li>Full or partial buyout of the River Room, up to 50 guests</li>
+          <li>Custom menus built around the day's catch</li>
+          <li>Rum bar service and live music add-ons available</li>
+        </ul>
+        <Button href="/private-events/">Inquire About Private Events</Button>
+      </div>
+      <div class="events__stack">
+        <div class="events__photo events__photo--back" data-3d="table" data-3d-strength="0.7">
+          <Photo src={riverRoomTable} alt="Long live-edge wood table and dark leather chairs set for a group in the River Room" ratio="4 / 3" sizes="(min-width: 60em) 36vw, 80vw" reveal={false} class="frame" />
+        </div>
+        <div class="events__photo events__photo--front" data-3d="table">
+          <Photo src={riverRoom} alt="The River Room at Leroy's Fish Shack, with framed marine artwork, a live-edge wood table, and round tables set for a private event" ratio="4 / 3" sizes="(min-width: 60em) 40vw, 90vw" reveal={false} class="frame" />
+          <span class="events__badge" data-float><strong>50</strong> guests max</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GIFT CARDS ===== -->
+  <section class="gift section-pad" id="gift-cards" aria-labelledby="gift-title">
+    <div class="container gift__grid">
+      <div class="gift__card-wrap">
+        <div class="gift__card" data-3d="turn" data-3d-strength="0.9">
+          <div data-float="slow">
+            <Picture src={giftCard} alt="Leroy's Fish Shack e-gift card" formats={['avif', 'webp']} widths={[428]} sizes="(min-width: 60em) 428px, 80vw" loading="lazy" />
+          </div>
+        </div>
+      </div>
+      <div class="gift__copy">
+        <p class="eyebrow">Give the Gift of the Gulf</p>
+        <h2 id="gift-title" data-split>E-Gift <em class="serif-i">Cards</em></h2>
+        <p class="lede">
+          Treat someone to fresh Gulf seafood, sunset views on Charlotte Harbor, and a rum bar worth staying for,
+          delivered instantly by email, ready whenever they are.
+        </p>
+        <Button href={links.giftCards} target="_blank" rel="noopener" icon="gift">Buy an E-Gift Card</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VISIT ===== -->
+  <section class="visit section-pad tone-light" id="visit" aria-labelledby="visit-title">
+    <div class="container visit__grid">
+      <div class="visit__copy">
+        <p class="eyebrow">On the water, on the harbor</p>
+        <h2 id="visit-title" data-split>Visit <em class="serif-i">Leroy's</em></h2>
+        <p class="visit__sub">Fishermen's Village, Punta Gorda</p>
+        <dl class="visit__list">
+          <div>
+            <dt><Icon name="map-pin" size={18} /> Address</dt>
+            <dd>{contact.street}<br />{contact.city}, {contact.region} {contact.postcode}</dd>
+          </div>
+          <div>
+            <dt><Icon name="clock" size={18} /> Hours</dt>
+            <dd>{contact.hours}</dd>
+          </div>
+          <div>
+            <dt><Icon name="phone" size={18} /> Phone</dt>
+            <dd><a href={contact.phoneHref}>{contact.phoneDisplay}</a></dd>
+          </div>
+          <div>
+            <dt><Icon name="calendar" size={18} /> Reservations</dt>
+            <dd>Highly recommended, especially for sunset seating. Walk-ins welcome as availability allows.</dd>
+          </div>
+        </dl>
+        <div class="cluster">
+          <Button href={contact.directionsHref} target="_blank" rel="noopener" icon="route" arrow={false}>Get Directions</Button>
+          <Button href={contact.phoneHref} variant="ghost" icon="phone" arrow={false}>Call the Shack</Button>
+        </div>
+      </div>
+      <div class="visit__map frame" data-3d="none">
+        <iframe
+          title="Leroy's Fish Shack location at Fishermen's Village, Punta Gorda"
+          src={contact.mapEmbed}
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faqs section-pad" id="faq" aria-labelledby="faq-title">
+    <div class="container faqs__grid">
+      <div>
+        <p class="eyebrow">Good to know</p>
+        <h2 id="faq-title">Frequently <em class="serif-i">Asked</em></h2>
+        <p class="muted faqs__note">Anything else? Call the shack at <a href={contact.phoneHref}>{contact.phoneDisplay}</a>.</p>
+      </div>
+      <Faq items={faqs} />
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  import '../scripts/home.ts';
+</script>
+
+<style>
+  .section-pad {
+    position: relative;
+    padding-block: var(--section-pad);
+  }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    margin-top: calc(-1 * var(--header-h));
+    padding-top: var(--header-h);
+    overflow: clip;
+    background:
+      radial-gradient(60% 70% at 85% 30%, rgb(62 142 134 / 0.28), transparent 70%),
+      linear-gradient(180deg, var(--deep), var(--harbor-900));
+  }
+
+  .hero__glow {
+    position: absolute;
+    inset: auto -10% -30% -10%;
+    height: 60%;
+    background: radial-gradient(50% 50% at 50% 50%, rgb(217 143 43 / 0.14), transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    padding-block: clamp(1.5rem, 1rem + 3vw, 3.5rem) clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  }
+
+  .hero__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .hero__status {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem 0.6rem;
+    padding: 0.45rem 0.9rem;
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    background: rgb(255 255 255 / 0.05);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+  }
+
+  .hero__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--mint);
+    box-shadow: 0 0 0 4px rgb(139 227 192 / 0.18);
+  }
+
+  .hero__sep {
+    color: var(--text-faint);
+  }
+
+  .hero__title {
+    font-size: clamp(2.6rem, 1.4rem + 5.2vw, 5.4rem);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .hero__tag {
+    display: block;
+    margin-top: 0.7rem;
+    font-size: 0.36em;
+    letter-spacing: -0.005em;
+    line-height: 1.1;
+  }
+
+  .hero__lede {
+    max-width: 30em;
+  }
+
+  .hero__ctas {
+    padding-top: 0.4rem;
+  }
+
+  .hero__cam {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--mint);
+    text-decoration: none;
+  }
+
+  .hero__cam:hover {
+    text-decoration: underline;
+  }
+
+  .hero__stage {
+    perspective: 1600px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero__card {
+    position: relative;
+    width: min(100%, 23rem);
+    aspect-ratio: 9 / 16;
+    max-height: 76vh;
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--surface) url('/media/hero-poster.jpg') center / cover;
+    border: 1px solid var(--line-strong);
+    box-shadow:
+      0 50px 90px -40px rgb(0 0 0 / 0.9),
+      0 0 0 10px rgb(255 255 255 / 0.03);
+    transform: rotateY(-16deg) rotateX(6deg) rotateZ(1.5deg);
+    transform-style: preserve-3d;
+  }
+
+  .hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__badge {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    background: rgb(8 21 23 / 0.7);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-pill);
+  }
+
+  @media (min-width: 60em) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      min-height: min(calc(100svh - var(--header-h)), 54rem);
+    }
+  }
+
+  /* Phones: the video fills the hero behind the words. */
+  @media (max-width: 59.99em) {
+    .hero__inner {
+      position: static;
+      min-height: 100svh;
+      align-content: end;
+    }
+    .hero__stage {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      perspective: 1200px;
+    }
+    .hero__card {
+      width: 100%;
+      max-height: none;
+      height: 100%;
+      aspect-ratio: auto;
+      border-radius: 0;
+      border: 0;
+      box-shadow: none;
+      transform: none;
+    }
+    .hero__card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgb(5 15 16 / 0.55) 0%, rgb(5 15 16 / 0.25) 22%, rgb(5 15 16 / 0.82) 48%, rgb(5 15 16 / 0.94) 70%, var(--harbor-900) 100%);
+    }
+    .hero__badge {
+      display: none;
+    }
+    .hero__copy {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  /* ---------- ticker ---------- */
+  .ticker-wrap {
+    overflow: clip;
+    padding-block: 0.75rem;
+    margin-block: -0.75rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .ticker {
+    position: relative;
+    z-index: 2;
+    overflow: clip;
+    padding-block: 0.9rem;
+    background: var(--mint);
+    color: #0b1c1e;
+    transform: rotate(-1.6deg) scale(1.04);
+  }
+
+  .ticker__track {
+    display: flex;
+    width: max-content;
+    margin: 0;
+  }
+
+  .ticker__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    padding-inline: 1.1rem;
+    white-space: nowrap;
+  }
+
+  .ticker__k {
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .ticker__v {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 600;
+    font-style: italic;
+  }
+
+  .ticker__star {
+    padding-left: 1.1rem;
+    color: var(--teal-600);
+  }
+
+  /* ---------- story ---------- */
+  .story__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 3vw, 3.5rem);
+  }
+
+  .story__copy > * + *,
+  .story__detail > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .story__window {
+    position: relative;
+  }
+
+  .story__caption {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    padding: 0.4rem 0.8rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: var(--radius-pill);
+  }
+
+  @media (min-width: 60em) {
+    .story__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      grid-template-areas:
+        'copy view'
+        'detail view';
+      align-items: start;
+    }
+    .story__copy {
+      grid-area: copy;
+    }
+    .story__view {
+      grid-area: view;
+      align-self: center;
+    }
+    .story__detail {
+      grid-area: detail;
+    }
+  }
+
+  /* ---------- kitchen ring ---------- */
+  .kitchen {
+    position: relative;
+    overflow: clip;
+    background:
+      radial-gradient(70% 50% at 50% 65%, rgb(62 142 134 / 0.22), transparent 70%),
+      var(--deep);
+  }
+
+  .kitchen__pin {
+    padding-block: var(--section-pad);
+  }
+
+  .kitchen__head {
+    text-align: center;
+  }
+
+  .kitchen__head > * + * {
+    margin-top: 0.9rem;
+  }
+
+  .kitchen__head .lede {
+    margin-inline: auto;
+  }
+
+  /* Without the 3D scene (no JS or reduced motion): a swipeable row. */
+  .ring {
+    margin-top: 2.5rem;
+  }
+
+  .ring__track {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0.5rem var(--gutter) 1rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .ring__card {
+    flex: none;
+    width: var(--card-w, clamp(13rem, 11rem + 9vw, 19rem));
+    scroll-snap-align: center;
+  }
+
+  .ring__card figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    box-shadow: var(--shadow-2);
+  }
+
+  .ring__card :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .ring__card figcaption {
+    padding: 0.8rem 1rem 0.95rem;
+    font-family: var(--font-display);
+    font-size: var(--step-0);
+    font-weight: 560;
+    line-height: 1.2;
+    min-height: 3.6em;
+  }
+
+  .kitchen__hint {
+    display: none;
+  }
+
+  /* The 3D scene (home.ts adds .is-3d). */
+  .kitchen:global(.is-3d) .kitchen__pin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--header-h) + 1rem) 1.5rem;
+  }
+
+  .kitchen:global(.is-3d) .ring {
+    position: relative;
+    flex: 1;
+    min-height: 22rem;
+    margin-top: 1rem;
+    perspective: 1500px;
+    perspective-origin: 50% 40%;
+  }
+
+  .kitchen:global(.is-3d) .ring__track {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    padding: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+  }
+
+  .kitchen:global(.is-3d) .ring__card {
+    position: absolute;
+    left: calc(var(--card-w) / -2);
+    top: calc(var(--card-h) / -2);
+    width: var(--card-w);
+    backface-visibility: hidden;
+  }
+
+  .kitchen:global(.is-3d) .ring__card :global(img) {
+    aspect-ratio: auto;
+    height: calc(var(--card-h) - 3.9rem);
+  }
+
+  .kitchen:global(.is-3d) .kitchen__hint {
+    display: block;
+    text-align: center;
+    font-size: var(--step--2);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  /* ---------- menu ---------- */
+  .menu {
+    overflow: clip;
+  }
+
+  .menu__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: center;
+  }
+
+  .menu__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .menu__copy .cluster {
+    padding-top: 0.4rem;
+  }
+
+  .menu__boards {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.75rem, 0.4rem + 1.5vw, 1.5rem);
+  }
+
+  .menu__board {
+    position: relative;
+    display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 30px 60px -28px rgb(22 32 31 / 0.55);
+    text-decoration: none;
+    background: var(--white);
+  }
+
+  .menu__board--1 {
+    rotate: -2.5deg;
+  }
+
+  .menu__board--2 {
+    rotate: 2.5deg;
+    margin-top: 2rem;
+  }
+
+  .menu__board :global(img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .menu__open {
+    position: absolute;
+    left: 50%;
+    bottom: 0.75rem;
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.8rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--white);
+    background: rgb(22 32 31 / 0.82);
+    border-radius: var(--radius-pill);
+  }
+
+  @media (min-width: 60em) {
+    .menu__grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+
+  /* ---------- rum bar ---------- */
+  .rum {
+    background:
+      radial-gradient(60% 60% at 80% 20%, rgb(217 143 43 / 0.22), transparent 70%),
+      linear-gradient(180deg, #1a130b, #0e0b07);
+    --eyebrow: var(--rum-soft);
+    --line: rgb(240 178 92 / 0.16);
+    --line-strong: rgb(240 178 92 / 0.32);
+  }
+
+  .rum .serif-i {
+    color: var(--rum-soft);
+  }
+
+  .rum__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4.5rem);
+    align-items: center;
+  }
+
+  .rum__frame {
+    max-width: 30rem;
+  }
+
+  .rum__parallax {
+    scale: 1.12;
+  }
+
+  .rum__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .pours {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.6rem !important;
+  }
+
+  .pour {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    padding: 1rem 1.2rem;
+    background: rgb(255 255 255 / 0.035);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .pour__n {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--rum);
+    line-height: 1;
+  }
+
+  .pour__name {
+    font-size: var(--step-1);
+  }
+
+  .pour p {
+    margin-top: 0.3rem;
+    font-size: var(--step--1);
+    color: var(--text-muted);
+  }
+
+  @media (min-width: 48em) {
+    .pours {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 60em) {
+    .rum__grid {
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    }
+  }
+
+  /* ---------- dock cams ---------- */
+  .dock {
+    background: linear-gradient(180deg, var(--harbor-900), var(--harbor-800));
+  }
+
+  .dock__head {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 1.2rem + 3vw, 3.25rem);
+  }
+
+  .dock__head > div > * + * {
+    margin-top: 1rem;
+  }
+
+  .dock__head h2 {
+    max-width: 16ch;
+  }
+
+  .dock__cams {
+    display: grid;
+    gap: 1.25rem;
+    perspective: 1800px;
+  }
+
+  .cam {
+    margin: 0;
+    padding: 0.6rem;
+    background: linear-gradient(160deg, #1d403c, #0b1c1e);
+    border: 1px solid var(--line-strong);
+    border-radius: 22px;
+    box-shadow: var(--shadow-2);
+  }
+
+  .cam__screen {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--deep);
+  }
+
+  .cam__screen iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .cam__label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 0.4rem 0.2rem;
+    font-size: var(--step--1);
+    font-weight: 600;
+  }
+
+  .cam__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.55rem;
+    font-size: var(--step--2);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: var(--buoy);
+    border-radius: var(--radius-sm);
+  }
+
+  .cam__dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 50%;
+    background: var(--white);
+  }
+
+  @media (min-width: 60em) {
+    .dock__head {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: end;
+    }
+    .dock__cams {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- private events ---------- */
+  .events {
+    overflow: clip;
+    background: var(--harbor-800);
+  }
+
+  .events__grid {
+    display: grid;
+    gap: clamp(2.5rem, 1rem + 5vw, 5rem);
+    align-items: center;
+  }
+
+  .events__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .events__copy .checklist {
+    padding-bottom: 0.5rem;
+  }
+
+  .events__stack {
+    position: relative;
+    padding: 0 0 18% 12%;
+  }
+
+  .events__photo--back {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 64%;
+    z-index: 0;
+    opacity: 0.92;
+  }
+
+  .events__photo--front {
+    position: relative;
+    z-index: 1;
+  }
+
+  .events__badge {
+    position: absolute;
+    right: -0.5rem;
+    top: -1rem;
+    display: grid;
+    place-items: center;
+    width: 6.5rem;
+    height: 6.5rem;
+    text-align: center;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--on-accent);
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.7);
+  }
+
+  .events__badge strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  @media (min-width: 60em) {
+    .events__grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+    .events__stack {
+      order: 2;
+    }
+  }
+
+  /* ---------- gift cards ---------- */
+  .gift {
+    background:
+      radial-gradient(50% 70% at 25% 50%, rgb(139 227 192 / 0.12), transparent 70%),
+      var(--harbor-900);
+  }
+
+  .gift__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: center;
+  }
+
+  .gift__card-wrap {
+    display: flex;
+    justify-content: center;
+    perspective: 1400px;
+  }
+
+  .gift__card {
+    width: min(100%, 26rem);
+  }
+
+  .gift__card :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    box-shadow:
+      0 40px 70px -30px rgb(0 0 0 / 0.85),
+      0 0 0 1px rgb(255 255 255 / 0.08);
+  }
+
+  .gift__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  @media (min-width: 60em) {
+    .gift__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* ---------- visit ---------- */
+  .visit__grid {
+    display: grid;
+    gap: clamp(2rem, 1rem + 4vw, 4rem);
+    align-items: stretch;
+  }
+
+  .visit__copy > * + * {
+    margin-top: 1.1rem;
+  }
+
+  .visit__sub {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .visit__list {
+    display: grid;
+    gap: 0.9rem;
+    margin-block: 1.5rem !important;
+  }
+
+  .visit__list > div {
+    display: grid;
+    gap: 0.25rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .visit__list dt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--step--2);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .visit__list dd {
+    margin: 0;
+    color: var(--text);
+  }
+
+  .visit__list a {
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .visit__map {
+    min-height: 22rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .visit__map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 22rem;
+    border: 0;
+  }
+
+  @media (min-width: 48em) {
+    .visit__list {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 60em) {
+    .visit__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+
+  /* ---------- faq ---------- */
+  .faqs {
+    background: var(--harbor-900);
+  }
+
+  .faqs__grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .faqs__grid > div > * + * {
+    margin-top: 1rem;
+  }
+
+  .faqs__note a {
+    color: var(--accent);
+  }
+
+  @media (min-width: 60em) {
+    .faqs__grid {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+      align-items: start;
+    }
+  }
+
+  /* ---------- headline word split (home.ts) ---------- */
+  :global(.split-w) {
+    display: inline-block;
+    transform-origin: 50% 100%;
+  }
+</style>

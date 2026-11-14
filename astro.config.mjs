@@ -5,8 +5,7 @@ import sitemap from '@astrojs/sitemap';
 const SITEMAP_EXCLUDE = ['/404/'];
 
 export default defineConfig({
-  // PLACEHOLDER: set to the business's real domain.
-  site: 'https://example.com',
+  site: 'https://leroysfishshack.com',
   // Match the live site's URL style (WordPress uses trailing slashes) so links and rankings carry over.
   trailingSlash: 'always',
   build: { format: 'directory' },

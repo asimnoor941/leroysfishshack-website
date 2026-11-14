@@ -7,15 +7,14 @@ import Icon from './Icon.astro';
 import { contact, footerLinks, social, site, PRIMARY_CTA } from '../data/site';
 
 const year = new Date().getFullYear();
-const [emailUser, emailDomain] = contact.email.split('@');
 ---
 
 <footer class="site-footer">
   <div class="container">
     <div class="site-footer__top">
       <div class="site-footer__brand">
-        <a href="/" aria-label={`${site.name} home`}><Logo layout="stacked" height={64} /></a>
-        <p class="site-footer__strap">{site.tagline}</p>
+        <a href="/" aria-label={`${site.name} home`}><Logo height={96} eager={false} /></a>
+        <p class="site-footer__strap">{site.blurb}</p>
         {
           (social.facebook || social.instagram) && (
             <div class="site-footer__social">
@@ -34,23 +33,23 @@ const [emailUser, emailDomain] = contact.email.split('@');
         }
       </div>
 
-      <nav class="site-footer__col" aria-label="Company">
-        <h2 class="site-footer__heading">Company</h2>
+      <nav class="site-footer__col" aria-label="Explore">
+        <h2 class="site-footer__heading">Explore</h2>
         <ul role="list">
           {footerLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
         </ul>
       </nav>
 
       <div class="site-footer__col">
-        <h2 class="site-footer__heading">Contact</h2>
+        <h2 class="site-footer__heading">Visit the Shack</h2>
         <ul role="list">
           <li>
             <a class="site-footer__contact" href={contact.phoneHref}><Icon name="phone" size={17} />{contact.phoneDisplay}</a>
           </li>
           <li>
-            <a class="site-footer__contact" href={contact.emailHref}><Icon name="mail" size={17} /><span>{emailUser}@<wbr />{emailDomain}</span></a>
+            <a class="site-footer__contact" href={contact.directionsHref} target="_blank" rel="noopener"><Icon name="map-pin" size={17} /><span>{contact.street}<br />{contact.city}, {contact.region} {contact.postcode}</span></a>
           </li>
-          <li class="site-footer__area"><Icon name="map-pin" size={17} />{contact.serviceLine}</li>
+          <li class="site-footer__area"><Icon name="clock" size={17} />{contact.hours}</li>
           <li><a class="site-footer__order" href={PRIMARY_CTA.href}>{PRIMARY_CTA.label} <Icon name="arrow-right" size={16} /></a></li>
         </ul>
       </div>
@@ -69,7 +68,7 @@ const [emailUser, emailDomain] = contact.email.split('@');
     position: relative;
     z-index: var(--z-content);
     padding-block: clamp(3.5rem, 2rem + 6vw, 6rem) 2rem;
-    background: linear-gradient(180deg, var(--navy-900), var(--abyss));
+    background: linear-gradient(180deg, var(--harbor-900), var(--deep));
     border-top: 1px solid var(--line);
     font-size: var(--step--1);
     color: var(--text-muted);
@@ -88,11 +87,10 @@ const [emailUser, emailDomain] = contact.email.split('@');
 
   .site-footer__strap {
     margin-top: 1.25rem;
-    font-size: var(--step--2);
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--text-faint);
+    max-width: 26rem;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--text-muted);
   }
 
   .site-footer__social {
